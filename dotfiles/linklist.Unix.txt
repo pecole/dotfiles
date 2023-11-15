@@ -1,0 +1,8 @@
+# neovim
+nvim/.config/nvim        ${HOME}/.config/nvim
+
+# zsh
+.zsh.d      ${HOME}/.zsh.d
+.zshenv     ${HOME}/.zshenv
+zeno/.config/zeno        ${HOME}/.config/zeno
+
