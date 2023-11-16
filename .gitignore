@@ -35,6 +35,8 @@ Temporary Items
 *.icloud
 
 ### Zsh ###
+# Zsh profile
+.zprofile
 # Zsh compiled script + zrecompile backup
 *.zwc
 *.zwc.old
