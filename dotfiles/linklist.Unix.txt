@@ -1,8 +1,8 @@
 # neovim
-nvim/.config/nvim        ${HOME}/.config/nvim
+nvim/.config/nvim         ${HOME}/.config/nvim
 
 # zsh
-.zsh.d      ${HOME}/.zsh.d
-.zshenv     ${HOME}/.zshenv
-zeno/.config/zeno        ${HOME}/.config/zeno
-
+zsh/zsh.d                 ${HOME}/.zsh.d
+zsh/.zshenv                ${HOME}/.zshenv
+zeno/.config/zeno         ${HOME}/.config/zeno
+sheldon/.config/sheldon   ${HOME}/.config/sheldon
