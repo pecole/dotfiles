@@ -1,3 +1,12 @@
+# shellenv
+if [[ -e /opt/homebrew/bin/brew ]]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  . "${ZDOTDIR}/homebrew.zsh"
+fi
+
+# sheldon
+[ type 'sheldon' &> /dev/null ] || eval "$(sheldon source)"
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -5,11 +14,26 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# shellenv
-eval "$(/opt/homebrew/bin/brew shellenv)"
-# direnv
-eval "$(direnv hook zsh)"
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
+# direnv
+[ type 'direnv' &> /dev/null ] || eval "$(direnv hook zsh)"
+
+# anyenv setting
+[ type 'anyenv' &> /dev/null ] || eval "$(anyenv init -)"
+
+# zeno
+if [[ -n $ZENO_LOADED ]]; then
+  bindkey ' '  zeno-auto-snippet
+  bindkey '^m' zeno-auto-snippet-and-accept-line
+  bindkey '^i' zeno-completion
+  bindkey '^g' zeno-ghq-cd
+  bindkey '^r' zeno-history-selection
+  bindkey '^x' zeno-insert-snippet
+fi
+
+# option
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
 setopt interactivecomments # allow comments in interactive mode
@@ -55,24 +79,7 @@ setopt hist_verify            # show command with history expansion to user befo
 alias history="history"
 
 # configure key keybindings
-bindkey -e			# vim key bindings
-function ghq-fzf() {
-  local src=$(ghq list | fzf --preview "git --git-dir $(ghq root)/{}/.git log --date=short --pretty=format:'-%C(yellow)%d%Creset %s %Cgreen(%cd) %C(bold blue)<%an>%Creset' --color")
-  if [ -n "$src" ]; then
-    BUFFER="cd $(ghq root)/$src"
-    zle accept-line
-  fi
-  zle -R -c
-}
-zle -N ghq-fzf
-bindkey '^]' ghq-fzf		# search ghq repository
-
-# alias docker
-alias dox='docker exec -it `docker ps --format "{{.Names}}" | fzf` bash'	# attach container
-alias dnrmi='docker rmi `docker images -f "dangling=true" -q`'			# delete image <none>
-
-# alias home brew
-alias powerup='brew update && brew upgrade && brew cleanup'			# all upgrade
+bindkey -e # emacs key bindings
 
 # alias ls
 alias ls='ls -GF'
@@ -80,27 +87,5 @@ alias la='ls -laG'
 alias ll='ls -lG'
 
 # alias nvim
-alias vim='nvim'
+[ type 'nvim' &> /dev/null ] || alias vim='nvim'
 
-# google-cloud-sdk
-source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc"
-source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc"
-
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
-# anyenv setting
-eval "$(anyenv init -)"
-
-# sheldon
-eval "$(sheldon source)"
-
-# zeno
-if [[ -n $ZENO_LOADED ]]; then
-  bindkey ' '  zeno-auto-snippet
-  bindkey '^m' zeno-auto-snippet-and-accept-line
-  bindkey '^i' zeno-completion
-  bindkey '^g' zeno-ghq-cd
-  bindkey '^r' zeno-history-selection
-  bindkey '^x' zeno-insert-snippet
-fi
