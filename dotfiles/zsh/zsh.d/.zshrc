@@ -5,7 +5,9 @@ if [[ -e /opt/homebrew/bin/brew ]]; then
 fi
 
 # sheldon
-[ type 'sheldon' &> /dev/null ] || eval "$(sheldon source)"
+if type 'sheldon' &> /dev/null; then
+  eval "$(sheldon source)"
+fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
@@ -18,19 +20,13 @@ fi
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
 # direnv
-[ type 'direnv' &> /dev/null ] || eval "$(direnv hook zsh)"
+if type 'direnv' &> /dev/null; then
+  eval "$(direnv hook zsh)"
+fi
 
 # anyenv setting
-[ type 'anyenv' &> /dev/null ] || eval "$(anyenv init -)"
-
-# zeno
-if [[ -n $ZENO_LOADED ]]; then
-  bindkey ' '  zeno-auto-snippet
-  bindkey '^m' zeno-auto-snippet-and-accept-line
-  bindkey '^i' zeno-completion
-  bindkey '^g' zeno-ghq-cd
-  bindkey '^r' zeno-history-selection
-  bindkey '^x' zeno-insert-snippet
+if type 'anyenv' &> /dev/null; then
+  eval "$(anyenv init -)"
 fi
 
 # option
@@ -87,5 +83,17 @@ alias la='ls -laG'
 alias ll='ls -lG'
 
 # alias nvim
-[ type 'nvim' &> /dev/null ] || alias vim='nvim'
+if type 'nvim' &> /dev/null; then
+  alias vim='nvim'
+fi
+
+# zeno
+if [[ -n $ZENO_LOADED ]]; then
+  bindkey ' '  zeno-auto-snippet
+  bindkey '^m' zeno-auto-snippet-and-accept-line
+  bindkey '^i' zeno-completion
+  bindkey '^g' zeno-ghq-cd
+  bindkey '^r' zeno-history-selection
+  bindkey '^x' zeno-insert-snippet
+fi
 
