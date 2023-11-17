@@ -137,5 +137,15 @@ return {
     config = function()
       require('neogit').setup()
     end
+  },
+  -- terminal
+  {
+    {
+      'akinsho/toggleterm.nvim',
+      version = "*",
+      config = function()
+        require('toggleterm').setup({ direction = 'float' })
+      end
+    }
   }
 }

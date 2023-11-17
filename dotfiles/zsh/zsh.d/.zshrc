@@ -16,9 +16,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
-
 # direnv
 if type 'direnv' &> /dev/null; then
   eval "$(direnv hook zsh)"
@@ -97,3 +94,5 @@ if [[ -n $ZENO_LOADED ]]; then
   bindkey '^x' zeno-insert-snippet
 fi
 
+# To customize prompt, run `p10k configure` or edit ~/.zsh.d/.p10k.zsh.
+[[ ! -f ~/.zsh.d/.p10k.zsh ]] || source ~/.zsh.d/.p10k.zsh
