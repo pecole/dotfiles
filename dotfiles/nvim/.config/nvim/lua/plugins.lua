@@ -140,12 +140,12 @@ return {
   },
   -- terminal
   {
-    {
-      'akinsho/toggleterm.nvim',
-      version = "*",
-      config = function()
-        require('toggleterm').setup({ direction = 'float' })
-      end
-    }
+    'akinsho/toggleterm.nvim',
+    version = "*",
+    config = true
+  },
+  -- github copilot
+  {
+    'github/copilot.vim',
   }
 }
