@@ -50,6 +50,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 -- toggleterm --
 local Terminal = require('toggleterm.terminal').Terminal
+
+-- float terminal
 local float_terminal = Terminal:new({
   direction = 'float',
   hidden = true
@@ -59,7 +61,8 @@ function _float_terminal_toggle()
   float_terminal:toggle()
 end
 
-keymap('n', 'tf', '<cmd>lua _float_terminal_toggle()<CR>', opts)
+keymap('n', '<C-t>', '<cmd>lua _float_terminal_toggle()<CR>', opts)
+keymap('t', '<C-t>', '<cmd>lua _float_terminal_toggle()<CR>', opts)
 
 -- lazygit
 local lazygit = Terminal:new({
