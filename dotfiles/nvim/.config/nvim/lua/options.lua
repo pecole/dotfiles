@@ -36,6 +36,7 @@ local options = {
   showtabline = 2,
   -- ハイライト
   cursorline = true,
+  cursorcolumn = false,
   background = "dark",
   -- クリップボード共有
   clipboard = "unnamedplus",
