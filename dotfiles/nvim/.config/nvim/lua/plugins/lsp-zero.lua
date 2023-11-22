@@ -121,6 +121,9 @@ return {
         lsp.default_keymaps({ buffer = bufnr })
         vim.keymap.set('n', '<leader>r', '<cmd>lua vim.lsp.buf.rename()<CR>')
         vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<CR>')
+        vim.keymap.set('n', '<space>f', function()
+          vim.lsp.buf.format { async = true }
+        end)
       end)
 
       lsp.format_on_save({
@@ -136,51 +139,50 @@ return {
       })
 
       -- (Optional) Configure lua language server for neovim
-      require('lspconfig').gopls.setup({
-        on_attach = function(client, bufnr)
-          print('hello gopls')
-          vim.api.nvim_create_autocmd('BufWritePre', {
-            pattern = '*.go',
-            callback = function()
-              vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
-            end
-          })
-        end,
-      })
+      --      require('lspconfig').gopls.setup({
+      --        on_attach = function(client, bufnr)
+      --          print('hello gopls')
+      --          vim.api.nvim_create_autocmd('BufWritePre', {
+      --            pattern = '*.go',
+      --            callback = function()
+      --              vim.lsp.buf.code_action({ context = { only = { 'source.organizeImports' } }, apply = true })
+      --            end
+      --          })
+      --        end,
+      --      })
 
       lsp.setup()
 
-      local null_ls = require('null-ls')
-      null_ls.setup({
-        sources = {
-          -- Replace these with the tools you have installed
-          -- make sure the source name is supported by null-ls
-          -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
-          null_ls.builtins.diagnostics.cspell.with({
-            method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
-            diagnostics_postprocess = function(diagnostic)
-              -- レベルをWARNに変更（デフォルトはERROR）
-              diagnostic.severity = vim.diagnostic.severity["WARN"]
-            end,
-            -- 起動時に設定ファイル読み込み
-            extra_args = { '--config', '~/.config/cspell/cspell.json' },
-          }),
-        }
-      })
-      -- See mason-null-ls.nvim's documentation for more details:
-      -- https://github.com/jay-babu/mason-null-ls.nvim#setup
-      require('mason-null-ls').setup({
-        --  ensure_installed = {
-        --    "hadolint",
-        --    "terraform_fmt",
-        --    "terraform_validate",
-        --    "stylua",
-        --    "gofumpt",
-        --    "golangci_lint",
-        --  },
-        --  automatic_installation = true,
-      })
+      --      local null_ls = require('null-ls')
+      --      null_ls.setup({
+      --        sources = {
+      --          -- Replace these with the tools you have installed
+      --          -- make sure the source name is supported by null-ls
+      --          -- https://github.com/jose-elias-alvarez/null-ls.nvim/blob/main/doc/BUILTINS.md
+      --          null_ls.builtins.diagnostics.cspell.with({
+      --            method = null_ls.methods.DIAGNOSTICS_ON_SAVE,
+      --            diagnostics_postprocess = function(diagnostic)
+      --              -- レベルをWARNに変更（デフォルトはERROR）
+      --              diagnostic.severity = vim.diagnostic.severity["WARN"]
+      --            end,
+      --            -- 起動時に設定ファイル読み込み
+      --            extra_args = { '--config', '~/.config/cspell/cspell.json' },
+      --          }),
+      --        }
+      --      })
+      --      -- See mason-null-ls.nvim's documentation for more details:
+      --      -- https://github.com/jay-babu/mason-null-ls.nvim#setup
+      --      require('mason-null-ls').setup({
+      --        --  ensure_installed = {
+      --        --    "hadolint",
+      --        --    "terraform_fmt",
+      --        --    "terraform_validate",
+      --        --    "stylua",
+      --        --    "gofumpt",
+      --        --    "golangci_lint",
+      --        --  },
+      --        --  automatic_installation = true,
+      --      })
     end
   }
 }
-
