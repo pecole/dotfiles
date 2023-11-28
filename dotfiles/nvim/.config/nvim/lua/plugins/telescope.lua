@@ -3,8 +3,8 @@
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
-    'nvim-lua/plenary.nvim',
-    'nvim-telescope/telescope-frecency.nvim'
+    { 'nvim-lua/plenary.nvim' },
+    { 'nvim-telescope/telescope-frecency.nvim' },
   },
   keys = {
     { '<C-p>', ':Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>', mode = 'n' },
