@@ -28,8 +28,8 @@ keymap('n', 'te', ':tabedit', opts)
 -- 新しいタブを一番右に作る
 keymap('n', 'gn', ':tabnew<Return>', opts)
 -- move tab
-keymap('n', 'gh', 'gT', opts)
-keymap('n', 'gl', 'gt', opts)
+--keymap('n', 'gh', 'gT', opts)
+--keymap('n', 'gl', 'gt', opts)
 
 -- Split window
 keymap('n', 'ss', ':split<Return><C-w>w', opts)
