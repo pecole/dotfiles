@@ -7,9 +7,9 @@ return {
     { 'nvim-telescope/telescope-frecency.nvim' },
   },
   keys = {
-    { '<C-p>', ':Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>', mode = 'n' },
-    { '<C-g>', ':Telescope live_grep<CR>',                                                 mode = 'n' },
-    { '<C-f>', ':Telescope frecency<CR>',                                                  mode = 'n' },
+    { '<leader>p', ':Telescope find_files find_command=rg,--files,--hidden,--glob,!*.git<CR>', mode = 'n' },
+    { '<leader>g', ':Telescope live_grep<CR>',                                                 mode = 'n' },
+    { '<leader>f', ':Telescope frecency<CR>',                                                  mode = 'n' },
   },
   config = function()
     local telescope = require('telescope')

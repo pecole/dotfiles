@@ -4,6 +4,11 @@ if [[ -e /opt/homebrew/bin/brew ]]; then
   . "${ZDOTDIR}/homebrew.zsh"
 fi
 
+# cargo
+if [[ -e "$HOME/.cargo/env" ]]; then
+  . "$HOME/.cargo/env"
+fi
+
 # sheldon
 if type 'sheldon' &> /dev/null; then
   eval "$(sheldon source)"

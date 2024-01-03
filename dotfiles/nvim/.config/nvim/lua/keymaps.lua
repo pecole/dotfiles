@@ -24,9 +24,9 @@ keymap('n', '<C-j>', '<C-w>j', opts)
 keymap('n', '<C-k>', '<C-w>k', opts)
 keymap('n', '<C-l>', '<C-w>l', opts)
 -- New tab
-keymap('n', 'te', ':tabedit', opts)
+--keymap('n', 'te', ':tabedit', opts)
 -- 新しいタブを一番右に作る
-keymap('n', 'gn', ':tabnew<Return>', opts)
+--keymap('n', 'gn', ':tabnew<Return>', opts)
 -- move tab
 --keymap('n', 'gh', 'gT', opts)
 --keymap('n', 'gl', 'gt', opts)
@@ -36,7 +36,7 @@ keymap('n', 'ss', ':split<Return><C-w>w', opts)
 keymap('n', 'sv', ':vsplit<Return><C-w>w', opts)
 
 -- Select all
-keymap('n', '<C-a>', 'gg<S-v>G', opts)
+--keymap('n', '<C-a>', 'gg<S-v>G', opts)
 
 -- Delete a word backwards
 --keymap('n', 'dw', "vb'_d", opts)
@@ -77,7 +77,7 @@ keymap('v', '>', '>gv', opts)
 keymap('v', 'v', '$h', opts)
 
 -- 0番レジスタを使いやすくした
-keymap('v', '<C-p>', "'0p", opts)
+--keymap('v', '<C-p>', "'0p", opts)
 
 -- Terminal --
 -- <Esc>でnormalモードに移行する

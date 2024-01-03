@@ -15,3 +15,4 @@ export PAGER=less
 
 # zeno path
 export ZENO_HOME=~/.config/zeno
+
