@@ -26,6 +26,6 @@ return {
     map('n', '<leader>j', '<Cmd>BufferPrevious<CR>', opts) --<leader>+jで前のBufferに移動
     map('n', '<leader>k', '<Cmd>BufferNext<CR>', opts)  --<leader>+kで次のBufferに移動
     -- Close buffer
-    map('n', '<leader>e', '<Cmd>BufferClose<CR>', opts) --<leader>+eでBufferを削除
+    map('n', '<leader>d', '<Cmd>BufferClose<CR>', opts) --<leader>+eでBufferを削除
   end
 }

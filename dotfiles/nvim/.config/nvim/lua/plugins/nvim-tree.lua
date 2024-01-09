@@ -16,7 +16,7 @@ return {
     'nvim-tree/nvim-web-devicons',
   },
   keys = {
-    { '<C-e>', ':NvimTreeToggle<CR>' },
+    { '<leader>e', mode = 'n' },
   },
   config = function()
     require('nvim-tree').setup({
@@ -27,7 +27,7 @@ return {
       },
       view = {
         width = '20%',
-        side = 'left',
+        side = 'right',
         signcolumn = 'no',
       },
 
@@ -63,5 +63,9 @@ return {
 
       on_attach = 'default'
     })
+
+    local api = require('nvim-tree.api')
+    vim.keymap.set('n', '<leader>e', api.tree.toggle)
   end
+
 }

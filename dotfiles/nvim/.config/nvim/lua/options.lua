@@ -27,7 +27,7 @@ local options = {
   -- ヘルプの言語
   helplang = 'ja',
   -- 不可視文字化可視化
---  list = true,
+  --  list = true,
   listchars = { tab = '>>', trail = '-', nbsp = '+' },
   -- 行番号
   number = true,
@@ -54,8 +54,6 @@ local options = {
   wrap = false,
   -- コマンドラインの補完指定
   wildoptions = "pum",
-  -- 補完の透過
-  pumblend = 5,
   -- カーソルの上下に確保する表示行
   scrolloff = 8,
   -- フォント
@@ -64,6 +62,10 @@ local options = {
   pumheight = 10,
   -- ターミナルで使うGUIカラー
   termguicolors = true,
+  -- ウィンドウの透過
+  winblend = 0,
+  -- ポップアップメニューの透過
+  pumblend = 0,
   -- 入力をタイムアウトするミリ秒
   timeoutlen = 300,
   -- undo情報をファイルに保存
@@ -87,4 +89,3 @@ end
 vim.cmd("set whichwrap+=<,>,[,],h,l")
 vim.cmd([[set iskeyword+=-]])
 vim.cmd([[set formatoptions-=cro]]) -- TODO: this doesn't seem to work
-
