@@ -23,5 +23,7 @@ config.keys = require('keys')
 -- font size
 config.font_size = 14.0
 
+config.window_decorations = 'RESIZE'
+
 -- and finally, return the configuration to wezterm
 return config
