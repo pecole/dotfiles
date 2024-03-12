@@ -11,8 +11,8 @@ if wezterm.config_builder then
 end
 
 -- This is where you actually apply your config choices
-config.color_scheme = 'nord'
-config.window_background_opacity = 0.8
+config.color_scheme = 'Deafened (terminal.sexy)'
+config.window_background_opacity = 0.85
 
 -- colors
 config.colors = require('colors')
