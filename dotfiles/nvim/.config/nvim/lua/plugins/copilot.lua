@@ -2,5 +2,5 @@
 
 return {
   'github/copilot.vim',
-  event = 'VimEnter'
+  event = 'VeryLazy'
 }
