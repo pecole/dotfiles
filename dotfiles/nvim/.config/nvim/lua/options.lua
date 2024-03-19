@@ -27,7 +27,7 @@ local options = {
   -- ヘルプの言語
   helplang = 'ja',
   -- 不可視文字化可視化
-  --  list = true,
+  list = true,
   listchars = { tab = '>>', trail = '-', nbsp = '+' },
   -- 行番号
   number = true,

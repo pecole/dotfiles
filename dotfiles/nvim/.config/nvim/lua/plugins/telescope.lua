@@ -7,17 +7,18 @@ return {
     { 'nvim-telescope/telescope-frecency.nvim' },
   },
   keys = {
-    { '<leader>ff', mode = 'n' },
-    { '<leader>fg', mode = 'n' },
-    { '<leader>fb', mode = 'n' },
-    { '<leader>fh', mode = 'n' },
+    { '<leader>ff',       '<cmd>Telescope find_files<cr>', mode = 'n' },
+    { '<leader>fg',       '<cmd>Telescope live_grep<cr>',  mode = 'n' },
+    --{ '<leader>fb', '<cmd>Telescope buffers<cr>', mode = 'n' },
+    { '<leader>fh',       '<cmd>Telescope help_tags<cr>',  mode = 'n' },
+    { '<leader><leader>', '<cmd>Telescope frecency<cr>',   mode = 'n' },
   },
   config = function()
-    local builtin = require('telescope.builtin')
-    vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-    vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-    vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-    vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+    --local builtin = require('telescope.builtin')
+    --vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
+    --vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
+    --vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
+    --vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
 
     local telescope = require('telescope')
     local telescopeConfig = require("telescope.config")
