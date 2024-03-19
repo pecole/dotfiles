@@ -25,5 +25,13 @@ config.font_size = 14.0
 
 config.window_decorations = 'RESIZE'
 
+-- bell
+config.audible_bell = 'Disabled'
+config.visual_bell = {
+  fade_in_duration_ms = 75,
+  fade_out_duration_ms = 75,
+  target = 'CursorColor',
+}
+
 -- and finally, return the configuration to wezterm
 return config
