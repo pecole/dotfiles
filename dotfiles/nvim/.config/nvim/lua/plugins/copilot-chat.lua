@@ -125,7 +125,7 @@ return {
         desc = "CopilotChat - Open in vertical split",
       },
       {
-        "gg",
+        "<leader>gg",
         ":help ",
       },
       {
