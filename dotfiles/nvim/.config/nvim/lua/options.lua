@@ -31,6 +31,8 @@ local options = {
   listchars = { tab = '>>', trail = '-', nbsp = '+' },
   -- 行番号
   number = true,
+  -- 相対行番号
+  relativenumber = true,
   -- ステータスライン
   showmode = false,
   showtabline = 2,
@@ -44,8 +46,6 @@ local options = {
   cmdheight = 2,
   -- ウインドウのタイトル
   title = true,
-  -- 相対行番号
-  relativenumber = false,
   -- 行番号に使われる桁数
   numberwidth = 4,
   -- 目印用の桁をどう表示するか
