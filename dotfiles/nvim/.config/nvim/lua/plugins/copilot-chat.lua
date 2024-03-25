@@ -31,14 +31,14 @@ return {
     opts = {
       prompts = prompts,
       auto_follow_cursor = false, -- Don't follow the cursor after getting response
-      mappings = {
-        close = "q",              -- Close chat
-        reset = "<C-l>",          -- Clear the chat buffer
-        complete = "<Tab>",       -- Change to insert mode and press tab to get the completion
-        submit_prompt = "<CR>",   -- Submit question to Copilot Chat
-        accept_diff = "<C-a>",    -- Accept the diff
-        show_diff = "<C-s>",      -- Show the diff
-      },
+--      mappings = {
+--        close = "q",              -- Close chat
+--        reset = "<C-l>",          -- Clear the chat buffer
+--        complete = "<Tab>",       -- Change to insert mode and press tab to get the completion
+--        submit_prompt = "<CR>",   -- Submit question to Copilot Chat
+--        accept_diff = "<C-a>",    -- Accept the diff
+--        show_diff = "<C-s>",      -- Show the diff
+--      },
     },
     build = function()
       vim.notify("Please update the remote plugins by running ':UpdateRemotePlugins', then restart Neovim.")
