@@ -100,5 +100,3 @@ fi
 
 # To customize prompt, run `p10k configure` or edit ~/.zsh.d/.p10k.zsh.
 [[ ! -f ~/.zsh.d/.p10k.zsh ]] || source ~/.zsh.d/.p10k.zsh
-# iterm2 shell integration
-test -e ${ZDOTDIR}/.iterm2_shell_integration.zsh && source ${ZDOTDIR}/.iterm2_shell_integration.zsh || true
