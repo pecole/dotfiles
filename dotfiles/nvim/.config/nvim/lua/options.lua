@@ -14,7 +14,8 @@ local options = {
   smartcase = true,
   incsearch = true,
   -- マウス操作
-  mouse = "a",
+  --mouse = "a",
+  mouse = "",
   -- タブ、インデント
   tabstop = 2,
   shiftwidth = 2,
