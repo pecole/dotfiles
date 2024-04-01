@@ -12,35 +12,52 @@
 
 shell = "zsh"
 
-[plugins]
 [plugins.zsh-defer]
 github = 'romkatv/zsh-defer'
 apply = ['source']
 
+[templates]
+source = """
+{{ hooks?.pre | nl }}{% for file in files %}source \"{{ file }}\"
+{% endfor %}{{ hooks?.post | nl }}"""
+PATH = 'export PATH="$PATH:{{ dir }}"'
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+fpath = 'fpath=( "{{ dir }}" $fpath )'
+fzf-install = "{{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH=\"$PATH:{{ dir }}/bin\"\n"
+fzf-source = "{% for file in files %}source \"{{ file }}\"\n{% endfor %}"
+
+[plugins.compinit]
+inline = 'autoload -Uz compinit && zsh-defer compinit'
+
 [plugins.fast-syntax-highlighting]
 github = 'zdharma-continuum/fast-syntax-highlighting'
+apply = ['defer']
+
+[plugins.zsh-completions]
+github = 'zsh-users/zsh-completions'
+apply = ['defer']
+
+[plugins.zsh-autosuggestions]
+github = 'zsh-users/zsh-autosuggestions'
 apply = ['defer']
 
 [plugins.fzf]
 github = "junegunn/fzf"
 apply = ['fzf-install', 'fzf-source']
 
-[templates]
-PATH = 'export PATH="$PATH:{{ dir }}"'
-defer = "{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}"
-fzf-install = "{{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH=\"$PATH:{{ dir }}/bin\"\n"
-fzf-source = "{% for file in files %}source \"{{ file }}\"\n{% endfor %}"
-
-[plugins.zsh-completions]
-github = 'zsh-users/zsh-completions'
-apply = ['defer']
-
-[plugins.powerlevel10k]
-github = 'romkatv/powerlevel10k'
-
-[plugins.zsh-autosuggestions]
-github = 'zsh-users/zsh-autosuggestions'
-
 [plugins."zeno.zsh"]
 github = 'yuki-yano/zeno.zsh'
+#apply = ['defer']
 
+#[plugins."zeno.zsh".hooks]
+#post = """
+# if [[ -n $ZENO_LOADED ]]; then
+#  echo 'test'
+#  bindkey ' '  zeno-auto-snippet
+#  bindkey '^m' zeno-auto-snippet-and-accept-line
+#  bindkey '^i' zeno-completion
+#  bindkey '^g' zeno-ghq-cd
+#  bindkey '^r' zeno-history-selection
+#  bindkey '^x' zeno-insert-snippet
+#fi
+#"""

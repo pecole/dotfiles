@@ -14,15 +14,9 @@ if type 'sheldon' &> /dev/null; then
   eval "$(sheldon source)"
 fi
 
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
-fi
-
-if [[ -e /opt/homebrew/Cellar/source-highlight/3.1.9_5/bin/src-hilite-lesspipe.sh ]]; then
-  export LESSOPEN="| /opt/homebrew/Cellar/source-highlight/3.1.9_5/bin/src-hilite-lesspipe.sh %s"
+# starship
+if type 'starship' &> /dev/null; then
+  eval "$(starship init zsh)"
 fi
 
 # anyenv setting
@@ -43,25 +37,21 @@ setopt AUTO_PARAM_KEYS     # 環境変数を補完
 setopt inc_append_history  # 他のzshと履歴を共有
 setopt share_history
 
-# autocomplite
-if [ -e ~/.zsh/completions ]; then
-  fpath=(~/.zsh/completions $fpath)
-fi
 # enable completion features
-autoload -Uz compinit
-zstyle ':completion:*:*:*:*:*' menu select
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _expand _complete
-zstyle ':completion:*' format 'Completing %d'
-zstyle ':completion:*' group-name ''
-zstyle ':completion:*' list-colors ''
-zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-zstyle ':completion:*' rehash true
-zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' verbose true
-zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+#autoload -Uz compinit
+#zstyle ':completion:*:*:*:*:*' menu select
+#zstyle ':completion:*' auto-description 'specify: %d'
+#zstyle ':completion:*' completer _expand _complete
+#zstyle ':completion:*' format 'Completing %d'
+#zstyle ':completion:*' group-name ''
+#zstyle ':completion:*' list-colors ''
+#zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
+#zstyle ':completion:*' rehash true
+#zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+#zstyle ':completion:*' use-compctl false
+#zstyle ':completion:*' verbose true
+#zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # History configurations
 HISTFILE=$ZDOTDIR/.zsh-history
@@ -97,6 +87,3 @@ if [[ -n $ZENO_LOADED ]]; then
   bindkey '^r' zeno-history-selection
   bindkey '^x' zeno-insert-snippet
 fi
-
-# To customize prompt, run `p10k configure` or edit ~/.zsh.d/.p10k.zsh.
-[[ ! -f ~/.zsh.d/.p10k.zsh ]] || source ~/.zsh.d/.p10k.zsh
