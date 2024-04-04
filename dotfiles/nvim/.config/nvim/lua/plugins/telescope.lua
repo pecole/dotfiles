@@ -7,11 +7,11 @@ return {
     { 'nvim-telescope/telescope-frecency.nvim' },
   },
   keys = {
-    { '<leader>ff',       '<cmd>Telescope find_files<cr>', mode = 'n' },
-    { '<leader>fg',       '<cmd>Telescope live_grep<cr>',  mode = 'n' },
-    --{ '<leader>fb', '<cmd>Telescope buffers<cr>', mode = 'n' },
-    { '<leader>fh',       '<cmd>Telescope help_tags<cr>',  mode = 'n' },
-    { '<leader><leader>', '<cmd>Telescope frecency<cr>',   mode = 'n' },
+    { 'ff', '<cmd>Telescope find_files<cr>', mode = 'n' },
+    { 'fg', '<cmd>Telescope live_grep<cr>',  mode = 'n' },
+    { 'fb', '<cmd>Telescope buffers<cr>',    mode = 'n' },
+    { 'fh', '<cmd>Telescope help_tags<cr>',  mode = 'n' },
+    { 'fp', '<cmd>Telescope frecency<cr>',   mode = 'n' },
   },
   config = function()
     --local builtin = require('telescope.builtin')
