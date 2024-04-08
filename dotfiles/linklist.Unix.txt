@@ -2,8 +2,9 @@
 nvim/.config/nvim         ${HOME}/.config/nvim
 
 # zsh
-zsh/zsh.d                 ${HOME}/.zsh.d
-zsh/.zshenv               ${HOME}/.zshenv
-zeno/.config/zeno         ${HOME}/.config/zeno
-sheldon/.config/sheldon   ${HOME}/.config/sheldon
-wezterm/.config/wezterm   ${HOME}/.config/wezterm
+zsh/zsh.d                      ${HOME}/.zsh.d
+zsh/.zshenv                    ${HOME}/.zshenv
+zeno/.config/zeno              ${HOME}/.config/zeno
+sheldon/.config/sheldon        ${HOME}/.config/sheldon
+wezterm/.config/wezterm        ${HOME}/.config/wezterm
+starship/.config/starship.toml ${HOME}/.config/starship.toml
