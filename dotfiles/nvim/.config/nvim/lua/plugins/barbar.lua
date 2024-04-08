@@ -27,5 +27,6 @@ return {
     map('n', '<leader>k', '<Cmd>BufferNext<CR>', opts)  --<leader>+kで次のBufferに移動
     -- Close buffer
     map('n', '<leader>d', '<Cmd>BufferClose<CR>', opts) --<leader>+eでBufferを削除
+    map('n', '<leader>q', '<Cmd>BufferCloseAllButCurrent<CR>', opts) --<leader>+qで現在のBuffer以外を削除
   end
 }
