@@ -89,7 +89,7 @@ return {
     keys = {
       -- Show help actions with telescope
       {
-        "<leader>cch",
+        "<leader>ch",
         function()
           local actions = require("CopilotChat.actions")
           require("CopilotChat.integrations.telescope").pick(actions.help_actions())
@@ -98,7 +98,7 @@ return {
       },
       -- Show prompts actions with telescope
       {
-        "<leader>ccp",
+        "<leader>cp",
         function()
           local actions = require("CopilotChat.actions")
           require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
@@ -106,30 +106,26 @@ return {
         desc = "CopilotChat - Prompt actions",
       },
       {
-        "<leader>ccp",
+        "<leader>cp",
         ":lua require('CopilotChat.integrations.telescope').pick(require('CopilotChat.actions').prompt_actions())<CR>",
         mode = "x",
         desc = "CopilotChat - Prompt actions",
       },
       -- Code related commands
-      { "<leader>cce", "<cmd>CopilotChatExplain<cr>",       desc = "CopilotChat - Explain code" },
-      { "<leader>cct", "<cmd>CopilotChatTests<cr>",         desc = "CopilotChat - Generate tests" },
-      { "<leader>ccr", "<cmd>CopilotChatReview<cr>",        desc = "CopilotChat - Review code" },
-      { "<leader>ccR", "<cmd>CopilotChatRefactor<cr>",      desc = "CopilotChat - Refactor code" },
-      { "<leader>ccn", "<cmd>CopilotChatBetterNamings<cr>", desc = "CopilotChat - Better Naming" },
+      { "<leader>ce", "<cmd>CopilotChatExplain<cr>",       desc = "CopilotChat - Explain code" },
+      { "<leader>ct", "<cmd>CopilotChatTests<cr>",         desc = "CopilotChat - Generate tests" },
+      { "<leader>cr", "<cmd>CopilotChatReview<cr>",        desc = "CopilotChat - Review code" },
+      { "<leader>cR", "<cmd>CopilotChatRefactor<cr>",      desc = "CopilotChat - Refactor code" },
+      { "<leader>cn", "<cmd>CopilotChatBetterNamings<cr>", desc = "CopilotChat - Better Naming" },
       -- Chat with Copilot in visual mode
       {
-        "<leader>ccv",
+        "<leader>cv",
         ":CopilotChatVisual",
         mode = "x",
         desc = "CopilotChat - Open in vertical split",
       },
       {
-        "<leader>gg",
-        ":help ",
-      },
-      {
-        "<leader>ccx",
+        "<leader>cx",
         ":CopilotChatInline<cr>",
         mode = "x",
         desc = "CopilotChat - Inline chat",
@@ -147,7 +143,7 @@ return {
       },
       -- Quick chat with Copilot
       {
-        "<leader>ccq",
+        "<leader>cq",
         function()
           local input = vim.fn.input("Quick Chat: ")
           if input ~= "" then
@@ -157,13 +153,13 @@ return {
         desc = "CopilotChat - Quick chat",
       },
       -- Debug
-      { "<leader>ccd", "<cmd>CopilotChatDebugInfo<cr>",     desc = "CopilotChat - Debug Info" },
+      { "<leader>cd", "<cmd>CopilotChatDebugInfo<cr>",     desc = "CopilotChat - Debug Info" },
       -- Fix the issue with diagnostic
-      { "<leader>ccf", "<cmd>CopilotChatFixDiagnostic<cr>", desc = "CopilotChat - Fix Diagnostic" },
+      { "<leader>cf", "<cmd>CopilotChatFixDiagnostic<cr>", desc = "CopilotChat - Fix Diagnostic" },
       -- Clear buffer and chat history
-      { "<leader>ccl", "<cmd>CopilotChatReset<cr>",         desc = "CopilotChat - Clear buffer and chat history" },
+      { "<leader>cl", "<cmd>CopilotChatReset<cr>",         desc = "CopilotChat - Clear buffer and chat history" },
       -- Toggle Copilot Chat Vsplit
-      { "<leader>ccv", "<cmd>CopilotChatToggle<cr>",        desc = "CopilotChat - Toggle Vsplit" },
+      { "<leader>cv", "<cmd>CopilotChatToggle<cr>",        desc = "CopilotChat - Toggle Vsplit" },
     },
   },
 }
