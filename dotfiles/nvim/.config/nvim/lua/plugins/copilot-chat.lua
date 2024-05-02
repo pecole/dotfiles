@@ -26,7 +26,7 @@ return {
     "CopilotC-Nvim/CopilotChat.nvim",
     dependencies = {
       "nvim-lua/plenary.nvim",
-      "nvim-lua/telescope.nvim",
+      "nvim-telescope/telescope.nvim",
     },
     opts = {
       prompts = prompts,

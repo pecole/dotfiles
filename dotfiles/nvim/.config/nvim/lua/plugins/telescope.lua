@@ -6,19 +6,14 @@ return {
     { 'nvim-lua/plenary.nvim' },
     { 'nvim-telescope/telescope-frecency.nvim' },
   },
-  keys = {
-    { 'ff', '<cmd>Telescope find_files<cr>', mode = 'n' },
-    { 'fg', '<cmd>Telescope live_grep<cr>',  mode = 'n' },
-    { 'fb', '<cmd>Telescope buffers<cr>',    mode = 'n' },
-    { 'fh', '<cmd>Telescope help_tags<cr>',  mode = 'n' },
-    { 'fp', '<cmd>Telescope frecency<cr>',   mode = 'n' },
-  },
+  event = "VeryLazy",
   config = function()
-    --local builtin = require('telescope.builtin')
-    --vim.keymap.set('n', '<leader>ff', builtin.find_files, {})
-    --vim.keymap.set('n', '<leader>fg', builtin.live_grep, {})
-    --vim.keymap.set('n', '<leader>fb', builtin.buffers, {})
-    --vim.keymap.set('n', '<leader>fh', builtin.help_tags, {})
+    local builtin = require('telescope.builtin')
+    vim.keymap.set('n', 'ff', builtin.find_files, { desc = 'Telescope - Find files' })
+    vim.keymap.set('n', 'fg', builtin.live_grep, { desc = 'Telescope - Live grep' })
+    vim.keymap.set('n', 'fb', builtin.buffers, { desc = 'Telescope - Buffers' })
+    vim.keymap.set('n', 'fh', builtin.help_tags, { desc = 'Telescope - Help tags' })
+    vim.keymap.set('n', 'fp', require("telescope").extensions.frecency.frecency, { desc = 'Telescope - Frecency' })
 
     local telescope = require('telescope')
     local telescopeConfig = require("telescope.config")
