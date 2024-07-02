@@ -97,18 +97,18 @@ return {
         desc = "CopilotChat - Help actions",
       },
       -- Show prompts actions with telescope
-      {
-        "<leader>cp",
-        function()
-          local actions = require("CopilotChat.actions")
-          require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
-        end,
-        desc = "CopilotChat - Prompt actions",
-      },
+      --{
+      --  "<leader>cp",
+      --  function()
+      --    local actions = require("CopilotChat.actions")
+      --    require("CopilotChat.integrations.telescope").pick(actions.prompt_actions())
+      --  end,
+      --  desc = "CopilotChat - Prompt actions",
+      --},
       {
         "<leader>cp",
         ":lua require('CopilotChat.integrations.telescope').pick(require('CopilotChat.actions').prompt_actions())<CR>",
-        mode = "x",
+        mode = "n",
         desc = "CopilotChat - Prompt actions",
       },
       -- Code related commands
@@ -126,7 +126,7 @@ return {
       },
       {
         "<leader>cx",
-        ":CopilotChatInline<cr>",
+        "<cmd>CopilotChatInline<cr>",
         mode = "x",
         desc = "CopilotChat - Inline chat",
       },
