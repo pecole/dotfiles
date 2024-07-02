@@ -36,5 +36,10 @@ config.visual_bell = {
 -- tab bar
 config.tab_bar_at_bottom = true
 
+-- target_triple
+if wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
+  config.font_size = 10.0
+end
+
 -- and finally, return the configuration to wezterm
 return config
