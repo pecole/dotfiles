@@ -33,5 +33,8 @@ config.visual_bell = {
   target = 'CursorColor',
 }
 
+-- tab bar
+config.tab_bar_at_bottom = true
+
 -- and finally, return the configuration to wezterm
 return config

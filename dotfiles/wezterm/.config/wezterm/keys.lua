@@ -1,6 +1,23 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
 return {
+  -- close pane
+  {
+    key = "w",
+    mods = "CTRL | SHIFT",
+    action = wezterm.action.CloseCurrentPane { confirm = true },
+  },
+  -- rotate pane
+  {
+    key = "e",
+    mods = "CTRL | SHIFT",
+    action = wezterm.action.RotatePanes 'CounterClockwise'
+  },
+  {
+    key = "o",
+    mods = "CTRL | SHIFT",
+    action = wezterm.action.RotatePanes 'Clockwise'
+  },
   -- split pane
   {
     key = '_',
