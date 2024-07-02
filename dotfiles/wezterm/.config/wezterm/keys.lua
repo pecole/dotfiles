@@ -1,6 +1,12 @@
 local wezterm = require "wezterm"
 local act = wezterm.action
 return {
+  -- full screen
+  {
+    key = "f",
+    mods = "CTRL | SHIFT",
+    action = act.ToggleFullScreen,
+  },
   -- close pane
   {
     key = "w",
