@@ -34,7 +34,7 @@ config.visual_bell = {
 }
 
 -- tab bar
-config.tab_bar_at_bottom = true
+--config.tab_bar_at_bottom = true
 
 -- target_triple
 if wezterm.target_triple == 'x86_64-unknown-linux-gnu' then
