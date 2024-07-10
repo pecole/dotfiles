@@ -108,16 +108,18 @@ return {
   {
     key = 'r',
     mods = 'CTRL | SHIFT',
-    action = act.PromptInputLine {
-      description = string.format("Rename workspace: %s -> ", wezterm.mux.get_active_workspace()),
-      action = wezterm.action_callback(function(_, _, line)
-        if line then
-          wezterm.mux.rename_workspace(
-            wezterm.mux.get_active_workspace(),
-            line
-          )
-        end
-      end),
-    },
+    action = wezterm.action_callback(function(window, pane)
+      window:perform_action(act.PromptInputLine {
+        description = string.format("Rename workspace: %s -> ", wezterm.mux.get_active_workspace()),
+        action = wezterm.action_callback(function(_, _, line)
+          if line then
+            wezterm.mux.rename_workspace(
+              wezterm.mux.get_active_workspace(),
+              line
+            )
+          end
+        end),
+      }, pane)
+    end),
   },
 }
