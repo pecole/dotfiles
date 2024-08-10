@@ -5,7 +5,7 @@ dotfiles_root=$(cd $(dirname $0)/.. && pwd)
 
 # create symblic link
 cd ${dotfiles_root}/dotfiles
-for linklist in "linklist.Unix.txt" "linklist.$(uname).txt"; do
+for linklist in "linklist.Base.txt" "linklist.$(uname).txt"; do
     [ ! -r "${linklist}" ] && continue
 
     __remove_linklist_comment "$linklist" | while read target link; do
@@ -19,9 +19,3 @@ for linklist in "linklist.Unix.txt" "linklist.$(uname).txt"; do
     done
 done
 
-if [ "$(uname)" == 'Darwin' ]; then
-    if !(type "brew" > /dev/null 2>&1); then
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-    fi
-    brew bundle --global
-fi
