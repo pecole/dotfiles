@@ -24,6 +24,11 @@ if type 'anyenv' &> /dev/null; then
   eval "$(anyenv init -)"
 fi
 
+# gh setting
+if type 'gh' &> /dev/null; then
+  eval "$(gh completion -s zsh)"
+fi
+
 # option
 setopt autocd              # change directory just by typing its name
 #setopt correct            # auto correct mistakes
