@@ -8,7 +8,7 @@ vim.g.loaded_netrwPlugin = 1
 vim.opt.termguicolors = true
 
 -- showing the tree of my current buffer from where i open up nvim-tree
-vim.g.nvim_tree_respect_buf_cwd = 1
+--vim.g.nvim_tree_respect_buf_cwd = 1
 
 return {
   'nvim-tree/nvim-tree.lua',
