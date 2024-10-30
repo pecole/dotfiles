@@ -5,7 +5,7 @@ return {
   config = function()
     local config = require('nvim-treesitter.configs')
     config.setup({
-      ensure_installed = { "lua" },
+      ensure_installed = { "lua", "bash", "awk", "json", "diff" },
       sync_install = true,
       auto_install = true,
 
