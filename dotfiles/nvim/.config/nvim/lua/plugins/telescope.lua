@@ -1,5 +1,14 @@
 -- telescope --
 
+local function live_grep()
+  local root = string.gsub(vim.fn.system("git rev-parse --show-toplevel"), "\n", "")
+  if vim.v.shell_error == 0 then
+    require('telescope.builtin').live_grep({ cwd = root })
+  else
+    require('telescope.builtin').live_grep()
+  end
+end
+
 return {
   'nvim-telescope/telescope.nvim',
   dependencies = {
@@ -10,7 +19,7 @@ return {
   config = function()
     local builtin = require('telescope.builtin')
     vim.keymap.set('n', 'ff', builtin.find_files, { desc = 'Telescope - Find files' })
-    vim.keymap.set('n', 'fg', builtin.live_grep, { desc = 'Telescope - Live grep' })
+    vim.keymap.set('n', 'fg', live_grep, { desc = 'Telescope - Live grep' })
     vim.keymap.set('n', 'fb', builtin.buffers, { desc = 'Telescope - Buffers' })
     vim.keymap.set('n', 'fh', builtin.help_tags, { desc = 'Telescope - Help tags' })
     vim.keymap.set('n', 'fp', require("telescope").extensions.frecency.frecency, { desc = 'Telescope - Frecency' })

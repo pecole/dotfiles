@@ -13,6 +13,9 @@ $line_break\
 $character\
 """
 
+scan_timeout = 100
+command_timeout = 2000
+
 [os]
 format = "[$symbol]($style)"
 style = 'fg:#1a1b26 bg:#7aa2f7'
