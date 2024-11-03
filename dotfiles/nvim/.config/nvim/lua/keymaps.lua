@@ -33,7 +33,7 @@ keymap('n', '<C-l>', '<C-w>l', opts)
 --keymap('n', 'gl', 'gt', opts)
 
 -- ;でコマンド入力( ;と:を入れ替)
-keymap('n', ';', ':', opts)
+--keymap('n', ';', ':', opts)
 
 -- 行末までのヤンクにする
 keymap('n', 'Y', 'y$', opts)
