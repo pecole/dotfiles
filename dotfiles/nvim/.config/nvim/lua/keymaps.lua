@@ -32,12 +32,8 @@ keymap('n', '<C-l>', '<C-w>l', opts)
 --keymap('n', 'gh', 'gT', opts)
 --keymap('n', 'gl', 'gt', opts)
 
--- Split window
-keymap('n', 'ss', ':split<Return><C-w>w', opts)
-keymap('n', 'sv', ':vsplit<Return><C-w>w', opts)
-
 -- ;でコマンド入力( ;と:を入れ替)
---keymap('n', ';', ':', opts)
+keymap('n', ';', ':', opts)
 
 -- 行末までのヤンクにする
 keymap('n', 'Y', 'y$', opts)
@@ -47,7 +43,9 @@ keymap('n', '<Esc><Esc>', ':<C-u>set nohlsearch<Return>', opts)
 
 -- Insert --
 -- コンマの後に自動的にスペースを挿入
---keymap('i', ',', ',<Space>', opts)
+keymap('i', ',', ',<Space>', opts)
+-- jjでInsertモードを抜ける
+keymap('i', 'jj', '<Esc>', opts)
 
 -- Emacs風
 keymap('i', '<C-f>', '<Right>', opts)
