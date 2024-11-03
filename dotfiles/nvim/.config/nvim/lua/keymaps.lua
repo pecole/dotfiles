@@ -43,7 +43,7 @@ keymap('n', '<Esc><Esc>', ':<C-u>set nohlsearch<Return>', opts)
 
 -- Insert --
 -- コンマの後に自動的にスペースを挿入
-keymap('i', ',', ',<Space>', opts)
+--keymap('i', ',', ',<Space>', opts)
 -- jjでInsertモードを抜ける
 keymap('i', 'jj', '<Esc>', opts)
 
