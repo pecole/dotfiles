@@ -44,12 +44,14 @@ return {
   dependencies = {
     { 'williamboman/mason-lspconfig.nvim' },
     { 'neovim/nvim-lspconfig' },
+    { 'jose-elias-alvarez/null-ls.nvim' },
   },
   event = { 'VeryLazy', 'BufReadPre', 'BufNewFile' },
   config = function()
     local mason = require('mason')
-    local lspconfig = require('lspconfig')
     local mason_lspconfig = require('mason-lspconfig')
+    local lspconfig = require('lspconfig')
+
     mason.setup()
     mason_lspconfig.setup()
     mason_lspconfig.setup_handlers({

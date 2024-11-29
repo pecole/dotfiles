@@ -4,24 +4,24 @@ if [[ -e /opt/homebrew/bin/brew ]]; then
   . "${ZDOTDIR}/homebrew.zsh"
 fi
 
-# cargo
-if [[ -e "$HOME/.cargo/env" ]]; then
-  . "$HOME/.cargo/env"
-fi
-
 # sheldon
 if type 'sheldon' &> /dev/null; then
   eval "$(sheldon source)"
 fi
 
+# cargo
+if [[ -e "$HOME/.cargo/env" ]]; then
+  . "$HOME/.cargo/env"
+fi
+
+# mise
+if [[ -e "$HOME/.local/bin/mise" ]]; then
+  eval "$($HOME/.local/bin/mise activate zsh)"
+fi
+
 # starship
 if type 'starship' &> /dev/null; then
   eval "$(starship init zsh)"
-fi
-
-# anyenv setting
-if type 'anyenv' &> /dev/null; then
-  eval "$(anyenv init -)"
 fi
 
 # gh setting
@@ -41,22 +41,6 @@ setopt promptsubst         # enable command substitution in prompt
 setopt AUTO_PARAM_KEYS     # 環境変数を補完
 setopt inc_append_history  # 他のzshと履歴を共有
 setopt share_history
-
-# enable completion features
-#autoload -Uz compinit
-#zstyle ':completion:*:*:*:*:*' menu select
-#zstyle ':completion:*' auto-description 'specify: %d'
-#zstyle ':completion:*' completer _expand _complete
-#zstyle ':completion:*' format 'Completing %d'
-#zstyle ':completion:*' group-name ''
-#zstyle ':completion:*' list-colors ''
-#zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-#zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}'
-#zstyle ':completion:*' rehash true
-#zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
-#zstyle ':completion:*' use-compctl false
-#zstyle ':completion:*' verbose true
-#zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
 
 # History configurations
 HISTFILE=$ZDOTDIR/.zsh-history
@@ -91,4 +75,8 @@ if [[ -n $ZENO_LOADED ]]; then
   bindkey '^g' zeno-ghq-cd
   bindkey '^r' zeno-history-selection
   bindkey '^x' zeno-insert-snippet
+fi
+
+if (which zprof > /dev/null 2>&1) ;then
+  zprof
 fi

@@ -1,3 +1,6 @@
+# 計測用
+# zmodload zsh/zprof && zprof
+
 # Set zsh setting directory
 [ -d ${HOME}/.zsh.d ] || return
 export ZDOTDIR=${HOME}/.zsh.d
