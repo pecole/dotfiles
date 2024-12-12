@@ -118,12 +118,12 @@ return {
           show_diff = {
             normal = 'gd'
           },
-          show_system_prompt = {
-            normal = 'gp'
-          },
-          show_user_selection = {
-            normal = 'gs'
-          },
+          -- show_system_prompt = {
+          --   normal = 'gp'
+          -- },
+          -- show_user_selection = {
+          --   normal = 'gs'
+          -- },
         },
       })
     end,
