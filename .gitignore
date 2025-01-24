@@ -81,3 +81,5 @@ lazy-lock.json
 # iterm2
 .iterm2_shell_integration.zsh
 .iterm2
+
+mise.toml
