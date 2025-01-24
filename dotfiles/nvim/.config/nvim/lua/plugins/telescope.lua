@@ -18,11 +18,11 @@ return {
   event = "VeryLazy",
   config = function()
     local builtin = require('telescope.builtin')
-    vim.keymap.set('n', 'ff', builtin.find_files, { desc = 'Telescope - Find files' })
-    vim.keymap.set('n', 'fg', live_grep, { desc = 'Telescope - Live grep' })
-    vim.keymap.set('n', 'fb', builtin.buffers, { desc = 'Telescope - Buffers' })
-    vim.keymap.set('n', 'fh', builtin.help_tags, { desc = 'Telescope - Help tags' })
-    vim.keymap.set('n', 'fp', require("telescope").extensions.frecency.frecency, { desc = 'Telescope - Frecency' })
+    vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope - Find files' })
+    vim.keymap.set('n', '<leader>fg', live_grep, { desc = 'Telescope - Live grep' })
+    vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope - Buffers' })
+    vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope - Help tags' })
+    vim.keymap.set('n', '<leader>fp', require("telescope").extensions.frecency.frecency, { desc = 'Telescope - Frecency' })
 
     local telescope = require('telescope')
     local telescopeConfig = require("telescope.config")

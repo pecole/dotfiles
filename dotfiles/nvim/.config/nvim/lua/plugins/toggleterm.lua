@@ -4,8 +4,8 @@ return {
   'akinsho/toggleterm.nvim',
   version = "*",
   keys = {
-    { '<leader>t',  '<cmd>lua _float_terminal_toggle()<CR>', mode = 'n' },
-    { '<leader>t',  '<cmd>lua _float_terminal_toggle()<CR>', mode = 't' },
+    { '<leader>tt',  '<cmd>lua _float_terminal_toggle()<CR>', mode = 'n' },
+    { '<leader>tt',  '<cmd>lua _float_terminal_toggle()<CR>', mode = 't' },
     { '<leader>tg', '<cmd>lua _lazygit_toggle()<CR>',        mode = 'n' },
     { '<leader>tg', '<cmd>lua _lazygit_toggle()<CR>',        mode = 't' }
   },

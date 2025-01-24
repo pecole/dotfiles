@@ -32,8 +32,8 @@ keymap('n', '<C-l>', '<C-w>l', opts)
 --keymap('n', 'gh', 'gT', opts)
 --keymap('n', 'gl', 'gt', opts)
 
--- ;でコマンド入力( ;と:を入れ替)
---keymap('n', ';', ':', opts)
+-- Register
+keymap('n', 'x', '"_x', opts)
 
 -- 行末までのヤンクにする
 keymap('n', 'Y', 'y$', opts)
@@ -45,11 +45,11 @@ keymap('n', '<Esc><Esc>', ':<C-u>set nohlsearch<Return>', opts)
 -- コンマの後に自動的にスペースを挿入
 --keymap('i', ',', ',<Space>', opts)
 -- jjでInsertモードを抜ける
-keymap('i', 'jj', '<Esc>', opts)
+-- keymap('i', 'jj', '<Esc>', opts)
 
 -- Emacs風
-keymap('i', '<C-f>', '<Right>', opts)
-keymap('i', '<C-b>', '<Left>', opts)
+-- keymap('i', '<C-f>', '<Right>', opts)
+-- keymap('i', '<C-b>', '<Left>', opts)
 
 -- Visual --
 -- Stay in indent mode
