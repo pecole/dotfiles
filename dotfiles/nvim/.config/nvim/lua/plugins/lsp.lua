@@ -40,24 +40,18 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 return {
-  'williamboman/mason.nvim',
+  'mason-org/mason-lspconfig.nvim',
   dependencies = {
-    { 'williamboman/mason-lspconfig.nvim' },
+    { 'mason-org/mason.nvim',           config = true },
     { 'neovim/nvim-lspconfig' },
     { 'jose-elias-alvarez/null-ls.nvim' },
   },
-  event = { 'VeryLazy', 'BufReadPre', 'BufNewFile' },
-  config = function()
-    local mason = require('mason')
-    local mason_lspconfig = require('mason-lspconfig')
-    local lspconfig = require('lspconfig')
-
-    mason.setup()
-    mason_lspconfig.setup()
-    mason_lspconfig.setup_handlers({
-      function(server_name)
-        lspconfig[server_name].setup({})
-      end
-    })
-  end
+  event = { 'BufReadPre', 'BufNewFile' },
+  config = true,
+  key = {
+    { "<C-space>", "<cmd>lua vim.lsp.completion.get()  <CR>", mode = "i" },
+    { "gh",        "<cmd>lua vim.lsp.buf.hover()       <CR>" },
+    { "gd",        "<cmd>lua vim.lsp.buf.definition()  <CR>" },
+    { "gD",        "<cmd>lua vim.lsp.buf.declaration() <CR>" },
+  }
 }
