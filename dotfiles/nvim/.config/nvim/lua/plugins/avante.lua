@@ -13,7 +13,18 @@ return {
     instructions_file = "avante.md",
     -- for example
     provider = "copilot",
-    auto_suggestions_provider = "copilot",
+    --provider = "gemini",
+    providers = {
+      gemini = {
+        endpoint = "https://generativelanguage.googleapis.com/v1beta/models",
+        model = "gemini-2.5-flash",
+        timeout = 30000,
+        extra_request_body = {
+          temperature = 0,
+          max_tokens = 20480,
+        },
+      },
+    },
   },
   dependencies = {
     "nvim-lua/plenary.nvim",
