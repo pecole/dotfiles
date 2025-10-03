@@ -25,7 +25,7 @@ return {
           update_cwd = true,
         },
         view = {
-          width = '20%',
+          width = '25%',
           side = 'right',
           signcolumn = 'no',
         },
