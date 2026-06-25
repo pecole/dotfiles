@@ -15,6 +15,10 @@ local opts = {
   defaults = {
     lazy = true,
   },
+  -- luarocks を必要とするプラグインが無いため hererocks を無効化する
+  rocks = {
+    hererocks = false,
+  },
   performance = {
     cache = {
       enabled = true,

@@ -4,8 +4,8 @@ vim.scriptencoding = 'utf-8'
 
 vim.wo.number = true
 
-vim.g.python_host_prog = vim.fn.system('which python')
-vim.g.python3_host_prog = vim.fn.system('which python3')
+-- remote python plugin は未使用のため python3 provider を無効化する
+vim.g.loaded_python3_provider = 0
 
 -- set ermguicolors to enable highlight groups
 vim.opt.termguicolors = true
