@@ -3,7 +3,6 @@ return {
   dependencies = {
     { 'mason-org/mason.nvim',           config = true },
     { 'neovim/nvim-lspconfig' },
-    { 'jose-elias-alvarez/null-ls.nvim' },
   },
   event = { 'BufReadPre', 'BufNewFile' },
   config = true,
