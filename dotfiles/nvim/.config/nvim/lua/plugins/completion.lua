@@ -1,12 +1,5 @@
 return {
   {
-    "zbirenbaum/copilot-cmp",
-    lazy = false,
-    config = function()
-      require("copilot_cmp").setup()
-    end
-  },
-  {
     "L3MON4D3/LuaSnip",
     dependencies = {
       { "hrsh7th/nvim-cmp" },
@@ -53,7 +46,6 @@ return {
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp',               keyword_length = 1 },
-          { name = 'copilot' },
           { name = 'vsnip',                  keyword_length = 2 },
           { name = 'nvim_lsp_signature_help' },
           { name = 'nvim_lua',               keyword_length = 2 },
