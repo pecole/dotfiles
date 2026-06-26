@@ -63,6 +63,11 @@ keymap('v', 'v', '$h', opts)
 -- <Esc>でnormalモードに移行する
 keymap('t', '<Esc>', '<C-\\><C-n>', opts)
 
+-- Ai keymaps --
+keymap("n", "<Leader>cl", "<cmd>CpCurrentLine<cr>", opts)
+keymap("v", "<Leader>ch", "<cmd>CpSelectedLines<cr>", opts)
+keymap("n", "<Leader>ck", "<cmd>CpError<cr>", opts)
+
 -- lsp settings --
 
 -- Global mappings.
