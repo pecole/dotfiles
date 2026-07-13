@@ -128,9 +128,4 @@ return {
       map('n', '<leader>qq', '<Cmd>BufferCloseAllButCurrent<CR>', opts) --<leader>+qqで現在のBuffer以外を削除
     end
   },
-  {
-    "karb94/neoscroll.nvim",
-    opts = {},
-    event = 'VeryLazy',
-  },
 }
