@@ -75,9 +75,6 @@ zsdoc/data
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,zsh
 
-### neovim ###
-lazy-lock.json
-
 # iterm2
 .iterm2_shell_integration.zsh
 .iterm2
