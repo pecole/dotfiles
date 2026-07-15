@@ -1,8 +1,12 @@
-# shellenv
-if [[ -e /opt/homebrew/bin/brew ]]; then
-  eval "$(/opt/homebrew/bin/brew shellenv)"
-  . "${ZDOTDIR}/homebrew.zsh"
-fi
+# shellenv (Apple Silicon / Intel Mac / Linuxbrew)
+for __brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
+  if [[ -x $__brew ]]; then
+    eval "$($__brew shellenv)"
+    . "${ZDOTDIR}/homebrew.zsh"
+    break
+  fi
+done
+unset __brew
 
 # sheldon
 if type 'sheldon' &> /dev/null; then
@@ -57,10 +61,14 @@ alias history="history"
 # configure key keybindings
 bindkey -e # emacs key bindings
 
-# alias ls
-alias ls='ls -GF'
-alias la='ls -laG'
-alias ll='ls -lG'
+# alias ls (BSD lsとGNU lsでカラーオプションが異なる)
+if [[ "$OSTYPE" == darwin* ]]; then
+  alias ls='ls -GF'
+else
+  alias ls='ls -F --color=auto'
+fi
+alias la='ls -la'
+alias ll='ls -l'
 
 # alias nvim
 if type 'nvim' &> /dev/null; then
