@@ -39,6 +39,23 @@ return {
     'vim-jp/vimdoc-ja',
     keys = {
       { 'h', mode = 'c' },
-    }
+    },
+    init = function()
+      -- vimdoc-ja は doc/tags-ja をリポジトリに含んでいるが、lazy.nvim が更新後に
+      -- :helptags で再生成するため作業ツリーが汚れ、次回更新の git checkout が失敗する。
+      -- 更新処理の直前に復元しておく。skip-worktree が立っていると checkout -- が
+      -- 効かないので先に落とす。
+      vim.api.nvim_create_autocmd('User', {
+        pattern = { 'LazyUpdatePre', 'LazySyncPre', 'LazyRestorePre' },
+        callback = function()
+          local dir = vim.fn.stdpath('data') .. '/lazy/vimdoc-ja'
+          if not vim.uv.fs_stat(dir .. '/.git') then
+            return
+          end
+          vim.system({ 'git', '-C', dir, 'update-index', '--no-skip-worktree', 'doc/tags-ja' }):wait()
+          vim.system({ 'git', '-C', dir, 'checkout', '--', 'doc/tags-ja' }):wait()
+        end,
+      })
+    end,
   },
 }
