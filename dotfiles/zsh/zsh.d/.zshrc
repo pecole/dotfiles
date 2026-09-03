@@ -49,7 +49,7 @@ fi
 # typeset -U は配列への代入でしか効かず、gcloud の path.zsh.inc や
 # mise の `export PATH='...'` のような文字列一括代入では重複が残るため、
 # PATHを触る処理をすべて終えたここで配列に代入し直して正規化する
-path=(/Users/pecole/.local/share/mise/installs/node/22/bin /Users/pecole/.local/share/mise/installs/go/1.23.4/bin /Users/pecole/.local/bin /Users/pecole/.cargo/bin /opt/homebrew/share/google-cloud-sdk/bin /opt/homebrew/bin /opt/homebrew/sbin /Users/pecole/.nix-profile/bin /nix/var/nix/profiles/default/bin /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /sbin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin /pkg/env/global/bin /Users/pecole/bin /Users/pecole/.local/share/sheldon/repos/github.com/junegunn/fzf/bin /Users/pecole/.local/share/sheldon/repos/github.com/yuki-yano/zeno.zsh/bin /Users/pecole/.claude/plugins/cache/claude-plugins-official/rust-analyzer-lsp/1.0.0/bin /Users/pecole/.claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0/bin)
+path=($path)
 
 # option
 setopt autocd              # change directory just by typing its name
