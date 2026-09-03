@@ -30,7 +30,7 @@ cd dotfiles
 ## リンクの追加
 
 `dotfiles/linklist.Base.txt` (OS共通) または `dotfiles/linklist.<uname -s>.txt`
-(OS別: `Darwin` / `Linux`) に
+(OS別: `Darwin` / `Linux`。必要になったら作成する。既定では Base のみ) に
 
 ```
 <リポジトリ内の相対パス>    <リンク先のパス>
@@ -42,3 +42,9 @@ cd dotfiles
 
 - GUIアプリ (cask) はMacのみ。LinuxではCLIツールだけインストールされる
 - マシン固有のzsh設定 (APIキーなど) はgit管理外の `~/.zsh_local` に書く
+- zshの生成物はリポジトリ内に作らず、以下に出力される
+  - `~/.cache/zsh/` — `brew shellenv` / `sheldon source` / `starship init` /
+    `fzf --zsh` / `gh completion` のキャッシュと `compinit` のダンプ
+  - `~/.local/state/zsh/history` — コマンド履歴
+  - キャッシュは元コマンドが更新されると自動で再生成される。
+    手動でやり直す場合は `rm -rf ~/.cache/zsh` してシェルを開き直す

@@ -14,7 +14,8 @@ $character\
 """
 
 scan_timeout = 100
-command_timeout = 2000
+# 遅いリポジトリでプロンプトが長時間固まらないようにする
+command_timeout = 500
 
 [os]
 format = "[$symbol]($style)"
