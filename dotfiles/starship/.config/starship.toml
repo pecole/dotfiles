@@ -64,7 +64,9 @@ format = '([\[$all_status$ahead_behind\]]($style))'
 added_style = 'fg:#9ece6a bg:#1a1b26'
 deleted_style = 'fg:#9ece6a bg:#1a1b26'
 format = '[+$added/-$deleted]($deleted_style)'
-disabled = false
+# 表示のたびに git diff --shortstat が走り約6msかかる
+# (大きいリポジトリではさらに伸びる)。速度優先で無効にする
+disabled = true
 
 [cmd_duration]
 min_time = 1
