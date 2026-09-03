@@ -1,55 +1,55 @@
+# 共通関数 (__cache_eval / __defer / __load_brew / __compinit / __zeno_bindkeys)
+source "${ZDOTDIR}/lib.zsh"
+
 # shellenv (Apple Silicon / Intel Mac / Linuxbrew)
-for __brew in /opt/homebrew/bin/brew /usr/local/bin/brew /home/linuxbrew/.linuxbrew/bin/brew; do
-  if [[ -x $__brew ]]; then
-    eval "$($__brew shellenv)"
-    . "${ZDOTDIR}/homebrew.zsh"
-    break
-  fi
-done
-unset __brew
+if __load_brew; then
+  source "${ZDOTDIR}/homebrew.zsh"
+fi
 
 # sheldon
-if type 'sheldon' &> /dev/null; then
-  eval "$(sheldon source)"
+# 出力は plugins.toml が変わらない限り同じなのでキャッシュする
+if (( $+commands[sheldon] )); then
+  __cache_eval sheldon "${XDG_CONFIG_HOME:-$HOME/.config}/sheldon/plugins.toml" sheldon source
 fi
 
-# 遅延読み込み（zsh-defer は sheldon が最初に読み込む）
-if (( $+functions[zsh-defer] )); then
-  # gcloud completion（約90ms）
-  [[ -r $GCLOUD_COMPLETION_INC ]] && zsh-defer source "$GCLOUD_COMPLETION_INC"
-elif [[ -r $GCLOUD_COMPLETION_INC ]]; then
-  source "$GCLOUD_COMPLETION_INC"
-fi
+# 以降 __defer は zsh-defer が使えれば遅延実行になる
+# (zsh-defer は登録順に実行されるので compinit 後に走らせたいものもここに積む)
+
+# gcloud completion（約90ms）
+[[ -r $GCLOUD_COMPLETION_INC ]] && __defer source "$GCLOUD_COMPLETION_INC"
+
+# gh completion (compdef を使うため compinit の後に読む必要がある)
+(( $+commands[gh] )) && __defer __cache_eval gh-completion "$commands[gh]" gh completion -s zsh
+
+# fzf のキーバインドと補完
+(( $+commands[fzf] )) && __defer __cache_eval fzf "$commands[fzf]" fzf --zsh
+
+# zeno のキーバインド (zeno 本体も同じキューで遅延ロードされる)
+__defer __zeno_bindkeys
 
 # cargo
-if [[ -e "$HOME/.cargo/env" ]]; then
+if [[ -r "$HOME/.cargo/env" ]]; then
   . "$HOME/.cargo/env"
 fi
 
 # mise
-if [[ -e "$HOME/.local/bin/mise" ]]; then
-  eval "$($HOME/.local/bin/mise activate zsh)"
+# activate の出力には解決済みのPATHが埋め込まれるためキャッシュできない
+__mise=${commands[mise]:-$HOME/.local/bin/mise}
+if [[ -x $__mise ]]; then
+  eval "$($__mise activate zsh)"
 fi
+unset __mise
 
 # starship
-if type 'starship' &> /dev/null; then
-  eval "$(starship init zsh)"
+if (( $+commands[starship] )); then
+  __cache_eval starship "$commands[starship]" starship init zsh
 fi
 
-# gh setting (補完をキャッシュして起動を高速化)
-if type 'gh' &> /dev/null; then
-  _gh_comp="${ZDOTDIR}/.gh-completion.zsh"
-  if [[ ! -f $_gh_comp || $_gh_comp -ot $(command -v gh) ]]; then
-    gh completion -s zsh > "$_gh_comp"
-  fi
-  # compdef を使うため compinit(zsh-defer) の後に読む必要がある
-  if (( $+functions[zsh-defer] )); then
-    zsh-defer source "$_gh_comp"
-  else
-    source "$_gh_comp"
-  fi
-  unset _gh_comp
-fi
+# PATHの重複を除去する
+# typeset -U は配列への代入でしか効かず、gcloud の path.zsh.inc や
+# mise の `export PATH='...'` のような文字列一括代入では重複が残るため、
+# PATHを触る処理をすべて終えたここで配列に代入し直して正規化する
+path=(/Users/pecole/.local/share/mise/installs/node/22/bin /Users/pecole/.local/share/mise/installs/go/1.23.4/bin /Users/pecole/.local/bin /Users/pecole/.cargo/bin /opt/homebrew/share/google-cloud-sdk/bin /opt/homebrew/bin /opt/homebrew/sbin /Users/pecole/.nix-profile/bin /nix/var/nix/profiles/default/bin /usr/local/bin /System/Cryptexes/App/usr/bin /usr/bin /bin /usr/sbin /sbin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin /var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin /pkg/env/global/bin /Users/pecole/bin /Users/pecole/.local/share/sheldon/repos/github.com/junegunn/fzf/bin /Users/pecole/.local/share/sheldon/repos/github.com/yuki-yano/zeno.zsh/bin /Users/pecole/.claude/plugins/cache/claude-plugins-official/rust-analyzer-lsp/1.0.0/bin /Users/pecole/.claude/plugins/cache/claude-plugins-official/lua-lsp/1.0.0/bin)
 
 # option
 setopt autocd              # change directory just by typing its name
@@ -65,7 +65,8 @@ setopt inc_append_history  # 他のzshと履歴を共有
 setopt share_history
 
 # History configurations
-HISTFILE=$ZDOTDIR/.zsh-history
+HISTFILE=${XDG_STATE_HOME:-$HOME/.local/state}/zsh/history
+[[ -d ${HISTFILE:h} ]] || mkdir -p "${HISTFILE:h}"
 HISTSIZE=1000
 SAVEHIST=2000
 setopt hist_expire_dups_first # delete duplicates first when HISTFILE size exceeds HISTSIZE
@@ -73,8 +74,8 @@ setopt hist_ignore_dups       # ignore duplicated commands history list
 setopt hist_ignore_space      # ignore commands that start with space
 setopt hist_verify            # show command with history expansion to user before running it
 
-# force zsh to show the complete history
-alias history="history"
+# 履歴を全件表示する (引数なしの history は直近16件しか出さない)
+alias history='history 1'
 
 # configure key keybindings
 bindkey -e # emacs key bindings
@@ -89,31 +90,9 @@ alias la='ls -la'
 alias ll='ls -l'
 
 # alias nvim
-if type 'nvim' &> /dev/null; then
+if (( $+commands[nvim] )); then
   alias vim='nvim'
 fi
 
-# zeno
-# zeno 本体を zsh-defer で遅延ロードしているため、キーバインドも同じキューに積む
-# （zsh-defer は登録順に実行するので zeno の source 完了後に走る）
-if (( $+functions[zsh-defer] )); then
-  zsh-defer -c '
-    if [[ -n $ZENO_LOADED ]]; then
-      bindkey "^m" zeno-auto-snippet-and-accept-line
-      bindkey "^i" zeno-completion
-      bindkey "^g" zeno-ghq-cd
-      bindkey "^r" zeno-history-selection
-      bindkey "^x" zeno-insert-snippet
-    fi
-  '
-elif [[ -n $ZENO_LOADED ]]; then
-  bindkey '^m' zeno-auto-snippet-and-accept-line
-  bindkey '^i' zeno-completion
-  bindkey '^g' zeno-ghq-cd
-  bindkey '^r' zeno-history-selection
-  bindkey '^x' zeno-insert-snippet
-fi
-
-if (which zprof > /dev/null 2>&1) ;then
-  zprof
-fi
+# 計測用: ~/.zshenv 先頭の `zmodload zsh/zprof` を有効にすると結果を表示する
+(( $+builtins[zprof] )) && zprof

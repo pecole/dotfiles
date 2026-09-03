@@ -5,6 +5,7 @@ brew "bison"
 brew "bitwarden-cli"
 brew "deno" # zeno.zshが使用
 brew "fd"
+brew "fzf"
 brew "gawk"
 brew "gh"
 brew "ghq"

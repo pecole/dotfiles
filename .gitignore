@@ -35,24 +35,11 @@ Temporary Items
 *.icloud
 
 ### Zsh ###
-# Zsh profile
-.zprofile
 # Zsh compiled script + zrecompile backup
+# (履歴・補完ダンプ・セッションは ~/.cache/zsh と ~/.local/state/zsh に出すため
+#  リポジトリ内には生成されない)
 *.zwc
 *.zwc.old
-
-# Zsh completion-optimization dumpfile
-*zcompdump*
-
-# Zsh history
-.zsh_history
-.zsh-history
-
-# Zsh sessions
-.zsh_sessions
-
-# Zsh zcalc history
-.zcalc_history
 
 # A popular plugin manager's files
 ._zinit
@@ -78,8 +65,3 @@ zsdoc/data
 # iterm2
 .iterm2_shell_integration.zsh
 .iterm2
-
-mise.toml
-
-# 自動生成される gh 補完キャッシュ
-dotfiles/zsh/zsh.d/.gh-completion.zsh

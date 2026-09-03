@@ -1,8 +1,7 @@
 # `sheldon` configuration file
 # ----------------------------
 #
-# You can modify this file directly or you can use one of the following
-# `sheldon` commands which are provided to assist in editing the config file:
+# 上から順に評価されて `sheldon source` の出力になるため、記述順に意味がある。
 #
 # - `sheldon add` to add a new plugin to the config file
 # - `sheldon edit` to open up the config file in the default editor
@@ -12,53 +11,33 @@
 
 shell = "zsh"
 
+[templates]
+defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
+
+# zsh-defer は他のプラグインより先に読み込む必要がある
 [plugins.zsh-defer]
 github = 'romkatv/zsh-defer'
 apply = ['source']
 
-[templates]
-source = """
-{{ hooks?.pre | nl }}{% for file in files %}source \"{{ file }}\"
-{% endfor %}{{ hooks?.post | nl }}"""
-PATH = 'export PATH="$PATH:{{ dir }}"'
-defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
-fpath = 'fpath=( "{{ dir }}" $fpath )'
-fzf-install = "[[ -x {{ dir }}/bin/fzf ]] || {{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH=\"$PATH:{{ dir }}/bin\"\n"
-fzf-source = "{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}"
+# 補完定義の追加は fpath への追加だけなので即時 source する。
+# compinit より後に読み込むと fpath の追加が反映されないため、必ずこの位置に置くこと
+[plugins.zsh-completions]
+github = 'zsh-users/zsh-completions'
+apply = ['source']
 
+# compinit 本体は重いので遅延実行する (__compinit は zsh.d/lib.zsh で定義)
 [plugins.compinit]
-inline = 'autoload -Uz compinit && zsh-defer compinit'
+inline = 'zsh-defer __compinit'
 
 [plugins.fast-syntax-highlighting]
 github = 'zdharma-continuum/fast-syntax-highlighting'
-apply = ['defer']
-
-[plugins.zsh-completions]
-github = 'zsh-users/zsh-completions'
 apply = ['defer']
 
 [plugins.zsh-autosuggestions]
 github = 'zsh-users/zsh-autosuggestions'
 apply = ['defer']
 
-[plugins.fzf]
-github = "junegunn/fzf"
-apply = ['fzf-install', 'fzf-source']
-
+# fzf は Homebrew で入れて .zshrc 側で `fzf --zsh` を読み込む
 [plugins."zeno.zsh"]
 github = 'yuki-yano/zeno.zsh'
 apply = ['defer']
-#apply = ['defer']
-
-#[plugins."zeno.zsh".hooks]
-#post = """
-# if [[ -n $ZENO_LOADED ]]; then
-#  echo 'test'
-#  bindkey ' '  zeno-auto-snippet
-#  bindkey '^m' zeno-auto-snippet-and-accept-line
-#  bindkey '^i' zeno-completion
-#  bindkey '^g' zeno-ghq-cd
-#  bindkey '^r' zeno-history-selection
-#  bindkey '^x' zeno-insert-snippet
-#fi
-#"""

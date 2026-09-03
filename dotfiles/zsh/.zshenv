@@ -1,5 +1,5 @@
 # 計測用
-# zmodload zsh/zprof && zprof
+# zmodload zsh/zprof
 
 # Set zsh setting directory
 [ -d ${HOME}/.zsh.d ] || return
@@ -10,4 +10,3 @@ export ZDOTDIR=${HOME}/.zsh.d
 
 # local settings
 [ -r ${HOME}/.zsh_local ] && . ${HOME}/.zsh_local
-
