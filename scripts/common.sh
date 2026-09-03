@@ -52,6 +52,24 @@ __remove_linklist_comment() {
 }
 
 
+# linklist (OS共通 + OS別) の各行を $1 に渡した関数で処理する
+# 関数は「リポジトリ内の絶対パス」「展開済みのリンク先」の2引数で呼ばれる
+__each_linklist_entry() {
+    _handler=$1
+
+    cd "${dotfiles_root:?}/dotfiles"
+    for _linklist in "linklist.Base.txt" "linklist.$(uname -s).txt"; do
+        [ -r "$_linklist" ] || continue
+
+        __remove_linklist_comment "$_linklist" | while read -r _target _link; do
+            # linklist内の ${HOME} などを展開
+            _link=$(eval echo "$_link")
+            "$_handler" "${PWD}/${_target}" "$_link"
+        done
+    done
+}
+
+
 # インストール済みのHomebrewをPATHに通す
 __load_brew() {
     command -v brew >/dev/null 2>&1 && return 0
