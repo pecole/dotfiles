@@ -23,8 +23,8 @@ source = """
 PATH = 'export PATH="$PATH:{{ dir }}"'
 defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}{{ hooks?.post | nl }}"
 fpath = 'fpath=( "{{ dir }}" $fpath )'
-fzf-install = "{{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH=\"$PATH:{{ dir }}/bin\"\n"
-fzf-source = "{% for file in files %}source \"{{ file }}\"\n{% endfor %}"
+fzf-install = "[[ -x {{ dir }}/bin/fzf ]] || {{ dir }}/install --bin > /dev/null \n[[ ! $PATH =~ {{ dir }} ]] && export PATH=\"$PATH:{{ dir }}/bin\"\n"
+fzf-source = "{% for file in files %}zsh-defer source \"{{ file }}\"\n{% endfor %}"
 
 [plugins.compinit]
 inline = 'autoload -Uz compinit && zsh-defer compinit'
@@ -47,6 +47,7 @@ apply = ['fzf-install', 'fzf-source']
 
 [plugins."zeno.zsh"]
 github = 'yuki-yano/zeno.zsh'
+apply = ['defer']
 #apply = ['defer']
 
 #[plugins."zeno.zsh".hooks]

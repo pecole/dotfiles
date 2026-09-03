@@ -13,6 +13,14 @@ if type 'sheldon' &> /dev/null; then
   eval "$(sheldon source)"
 fi
 
+# 遅延読み込み（zsh-defer は sheldon が最初に読み込む）
+if (( $+functions[zsh-defer] )); then
+  # gcloud completion（約90ms）
+  [[ -r $GCLOUD_COMPLETION_INC ]] && zsh-defer source "$GCLOUD_COMPLETION_INC"
+elif [[ -r $GCLOUD_COMPLETION_INC ]]; then
+  source "$GCLOUD_COMPLETION_INC"
+fi
+
 # cargo
 if [[ -e "$HOME/.cargo/env" ]]; then
   . "$HOME/.cargo/env"
@@ -28,9 +36,19 @@ if type 'starship' &> /dev/null; then
   eval "$(starship init zsh)"
 fi
 
-# gh setting
+# gh setting (補完をキャッシュして起動を高速化)
 if type 'gh' &> /dev/null; then
-  eval "$(gh completion -s zsh)"
+  _gh_comp="${ZDOTDIR}/.gh-completion.zsh"
+  if [[ ! -f $_gh_comp || $_gh_comp -ot $(command -v gh) ]]; then
+    gh completion -s zsh > "$_gh_comp"
+  fi
+  # compdef を使うため compinit(zsh-defer) の後に読む必要がある
+  if (( $+functions[zsh-defer] )); then
+    zsh-defer source "$_gh_comp"
+  else
+    source "$_gh_comp"
+  fi
+  unset _gh_comp
 fi
 
 # option
@@ -76,8 +94,19 @@ if type 'nvim' &> /dev/null; then
 fi
 
 # zeno
-if [[ -n $ZENO_LOADED ]]; then
-#  bindkey ' '  zeno-auto-snippet
+# zeno 本体を zsh-defer で遅延ロードしているため、キーバインドも同じキューに積む
+# （zsh-defer は登録順に実行するので zeno の source 完了後に走る）
+if (( $+functions[zsh-defer] )); then
+  zsh-defer -c '
+    if [[ -n $ZENO_LOADED ]]; then
+      bindkey "^m" zeno-auto-snippet-and-accept-line
+      bindkey "^i" zeno-completion
+      bindkey "^g" zeno-ghq-cd
+      bindkey "^r" zeno-history-selection
+      bindkey "^x" zeno-insert-snippet
+    fi
+  '
+elif [[ -n $ZENO_LOADED ]]; then
   bindkey '^m' zeno-auto-snippet-and-accept-line
   bindkey '^i' zeno-completion
   bindkey '^g' zeno-ghq-cd
