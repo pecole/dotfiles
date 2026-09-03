@@ -1,113 +1,147 @@
+-- =============================================================================
+-- キーの割り当て
+--
+-- vim.keymap.set(モード, 押すキー, 実行する内容, オプション) の形で書く。
+--
+-- モードの記号:
+--   'n' … ノーマルモード (文字を打つのではなく操作をするモード)
+--   'i' … 挿入モード     (文字を打つモード)
+--   'v' … ビジュアルモード (範囲を選択しているモード)
+--   't' … ターミナルモード (:terminal でシェルを開いているとき)
+--   ''  … n / v / オペレータ待ち の3つをまとめて指定
+--
+-- <Leader> は「自分用のキーの入り口」。ここではスペースキーにしている。
+-- 例えば <Leader>cl は「スペース → c → l」と順に押すという意味。
+--
+-- プラグインごとのキー割り当ては plugins/ 以下の各ファイルにある。
+-- =============================================================================
+
+-- noremap … 割り当て先がさらに別の割り当てを持っていても展開しない(暴走防止)
+-- silent  … 実行時にコマンド欄へ内容を表示しない
 local opts = { noremap = true, silent = true }
---local term_opts = { silent = true }
 
---local keymap = vim.keymap
-local keymap = vim.api.nvim_set_keymap
 
---Remap space as leader key
-keymap('', '<Space>', '<Nop>', opts)
+-- -----------------------------------------------------------------------------
+-- Leader キーの設定
+--
+-- スペース本来の動作(カーソルを右へ)を打ち消してから、Leader に割り当てる。
+-- ※ Leader を使う割り当てより先に書く必要がある
+-- -----------------------------------------------------------------------------
+vim.keymap.set('', '<Space>', '<Nop>', opts)
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
--- Modes
---   normal_mode = 'n',
---   insert_mode = 'i',
---   visual_mode = 'v',
---   visual_block_mode = 'x',
---   term_mode = 't',
---   command_mode = 'c',
 
--- Normal --
--- Better window navigation
-keymap('n', '<C-h>', '<C-w>h', opts)
-keymap('n', '<C-j>', '<C-w>j', opts)
-keymap('n', '<C-k>', '<C-w>k', opts)
-keymap('n', '<C-l>', '<C-w>l', opts)
+-- -----------------------------------------------------------------------------
+-- ウィンドウの移動 (画面を分割しているとき)
+--
+-- 本来は Ctrl-w → h のように2回押す必要があるが、Ctrl-h だけで動くようにする
+-- -----------------------------------------------------------------------------
+vim.keymap.set('n', '<C-h>', '<C-w>h', opts)   -- 左のウィンドウへ
+vim.keymap.set('n', '<C-j>', '<C-w>j', opts)   -- 下のウィンドウへ
+vim.keymap.set('n', '<C-k>', '<C-w>k', opts)   -- 上のウィンドウへ
+vim.keymap.set('n', '<C-l>', '<C-w>l', opts)   -- 右のウィンドウへ
 
--- New tab
---keymap('n', 'te', ':tabedit', opts)
--- 新しいタブを一番右に作る
---keymap('n', 'gn', ':tabnew<Return>', opts)
--- move tab
---keymap('n', 'gh', 'gT', opts)
---keymap('n', 'gl', 'gt', opts)
 
--- Register
-keymap('n', 'x', '"_x', opts)
+-- -----------------------------------------------------------------------------
+-- 編集まわり
+-- -----------------------------------------------------------------------------
+-- x (1文字削除) でコピー内容を上書きしないようにする。
+-- "_ は「捨てる置き場」を指定する書き方
+vim.keymap.set('n', 'x', '"_x', opts)
 
--- 行末までのヤンクにする
-keymap('n', 'Y', 'y$', opts)
+-- Y を「カーソルから行末までコピー」にする (本来は行全体のコピー)。
+-- D や C が行末までなので、それに揃える
+vim.keymap.set('n', 'Y', 'y$', opts)
 
--- ESC*2 でハイライトやめる
-keymap('n', '<Esc><Esc>', ':<C-u>set nohlsearch<Return>', opts)
+-- Esc を2回押すと検索語の強調表示を消す
+vim.keymap.set('n', '<Esc><Esc>', ':<C-u>set nohlsearch<Return>', opts)
 
--- Insert --
--- コンマの後に自動的にスペースを挿入
---keymap('i', ',', ',<Space>', opts)
--- jjでInsertモードを抜ける
--- keymap('i', 'jj', '<Esc>', opts)
 
--- Emacs風
--- keymap('i', '<C-f>', '<Right>', opts)
--- keymap('i', '<C-b>', '<Left>', opts)
+-- -----------------------------------------------------------------------------
+-- ビジュアルモード (範囲選択中)
+-- -----------------------------------------------------------------------------
+-- 字下げしても選択が解除されないようにする (gv = 直前の選択を復元)
+vim.keymap.set('v', '<', '<gv', opts)
+vim.keymap.set('v', '>', '>gv', opts)
 
--- Visual --
--- Stay in indent mode
-keymap('v', '<', '<gv', opts)
-keymap('v', '>', '>gv', opts)
+-- 選択中にもう一度 v を押すと行末まで選択を広げる
+-- ($ は行末、h で1文字戻すのは改行文字を含めないため)
+vim.keymap.set('v', 'v', '$h', opts)
 
--- ビジュアルモード時vで行末まで選択
-keymap('v', 'v', '$h', opts)
 
--- Terminal --
--- <Esc>でnormalモードに移行する
-keymap('t', '<Esc>', '<C-\\><C-n>', opts)
+-- -----------------------------------------------------------------------------
+-- ターミナルモード
+-- -----------------------------------------------------------------------------
+-- Esc でターミナルの操作から抜けて、画面を移動できるようにする
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', opts)
 
--- Ai keymaps --
-keymap("n", "<Leader>cl", "<cmd>CpCurrentLine<cr>", opts)
-keymap("v", "<Leader>ch", "<cmd>CpSelectedLines<cr>", opts)
-keymap("n", "<Leader>ck", "<cmd>CpError<cr>", opts)
 
--- lsp settings --
+-- -----------------------------------------------------------------------------
+-- AI に質問するとき用 (コマンドの中身は commands.lua)
+-- -----------------------------------------------------------------------------
+vim.keymap.set('n', '<Leader>cl', '<cmd>CpCurrentLine<cr>', opts)   -- 現在行の場所をコピー
+vim.keymap.set('v', '<Leader>ch', '<cmd>CpSelectedLines<cr>', opts) -- 選択範囲の場所をコピー
+vim.keymap.set('n', '<Leader>ck', '<cmd>CpError<cr>', opts)         -- エラー内容をコピー
 
--- Global mappings.
--- See `:help vim.diagnostic.*` for documentation on any of the below functions
-vim.keymap.set('n', '<space>o', vim.diagnostic.open_float, { desc = "Diagnostic - open float" })
--- goto_prev / goto_next は nvim 0.11 で非推奨。jump() に置き換え
+
+-- -----------------------------------------------------------------------------
+-- エラー・警告の表示 (LSP を使っていなくても常に有効)
+-- -----------------------------------------------------------------------------
+vim.keymap.set('n', '<space>o', vim.diagnostic.open_float,
+  { desc = 'Diagnostic - 内容をその場に表示' })
 vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
-  { desc = "Diagnostic - goto prev" })
+  { desc = 'Diagnostic - 前のエラーへ' })
 vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
-  { desc = "Diagnostic - goto next" })
-vim.keymap.set('n', '<space>ll', vim.diagnostic.setloclist, { desc = "Diagnostic - setcloclist" })
+  { desc = 'Diagnostic - 次のエラーへ' })
+vim.keymap.set('n', '<space>ll', vim.diagnostic.setloclist,
+  { desc = 'Diagnostic - 一覧を出す' })
 
--- Use LspAttach autocommand to only map the following keys
--- after the language server attaches to the current buffer
+
+-- -----------------------------------------------------------------------------
+-- LSP の機能 (定義へ移動、名前の変更など)
+--
+-- LSP は「その言語を理解して補完やエラー表示をしてくれる外部プログラム」。
+-- 言語ごとに用意されていて、対応するファイルを開いたときだけ動く。
+--
+-- そのためキーの割り当ても、LSP がそのファイルに接続したとき(LspAttach)に
+-- 「そのファイルの中でだけ有効」な形で行う。
+-- buffer = ev.buf の指定がその「このファイルの中だけ」という意味。
+-- -----------------------------------------------------------------------------
 vim.api.nvim_create_autocmd('LspAttach', {
   group = vim.api.nvim_create_augroup('UserLspConfig', {}),
   callback = function(ev)
-    -- Enable completion triggered by <c-x><c-o>
+    -- Ctrl-x Ctrl-o の標準の補完でも LSP の候補を使えるようにする
     vim.bo[ev.buf].omnifunc = 'v:lua.vim.lsp.omnifunc'
 
-    -- Buffer local mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, { buffer = ev.buf, desc = "Buffer - declaration" })
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { buffer = ev.buf, desc = "Buffer - definition" })
-    vim.keymap.set('n', 'gk', vim.lsp.buf.hover, { buffer = ev.buf, desc = "Buffer - hover" })
-    vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, { buffer = ev.buf, desc = "Buffer - implementation" })
-    vim.keymap.set('n', 'gh', vim.lsp.buf.signature_help, { buffer = ev.buf, desc = "Buffer - signature help" })
-    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder,
-      { buffer = ev.buf, desc = "Buffer - add workspace folder" })
-    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder,
-      { buffer = ev.buf, desc = "Buffer - remove workspace folder" })
-    vim.keymap.set('n', '<space>wl', function()
+    -- このファイルの中だけで有効なキーを割り当てるための小さな道具
+    local function map(key, action, description)
+      vim.keymap.set('n', key, action, { buffer = ev.buf, desc = description })
+    end
+
+    -- 移動
+    map('gd', vim.lsp.buf.definition,      'Buffer - 定義へ移動')
+    map('gD', vim.lsp.buf.declaration,     'Buffer - 宣言へ移動')
+    map('gi', vim.lsp.buf.implementation,  'Buffer - 実装へ移動')
+    map('gr', vim.lsp.buf.references,      'Buffer - 使われている場所の一覧')
+    map('<space>D', vim.lsp.buf.type_definition, 'Buffer - 型の定義へ移動')
+
+    -- 情報の表示
+    map('gk', vim.lsp.buf.hover,          'Buffer - 説明を表示')
+    map('gh', vim.lsp.buf.signature_help, 'Buffer - 引数の説明を表示')
+
+    -- 書き換え
+    map('<space>rn', vim.lsp.buf.rename,      'Buffer - 名前を変更')
+    map('<space>ca', vim.lsp.buf.code_action, 'Buffer - 修正候補を出す')
+    map('<space>f', function()
+      vim.lsp.buf.format { async = true }   -- async = 整形の完了を待たない
+    end, 'Buffer - 整形する')
+
+    -- ワークスペース (LSP が見ている対象フォルダ) の管理
+    map('<space>wa', vim.lsp.buf.add_workspace_folder,    'Buffer - 対象フォルダを追加')
+    map('<space>wr', vim.lsp.buf.remove_workspace_folder, 'Buffer - 対象フォルダを削除')
+    map('<space>wl', function()
       print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, { buffer = ev.buf, desc = "Buffer - ls workspace folders" })
-    vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, { buffer = ev.buf, desc = "Buffer - type definition" })
-    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, { buffer = ev.buf, desc = "Buffer - rename" })
-    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, { buffer = ev.buf, desc = "Buffer - code action" })
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, { buffer = ev.buf, desc = "Buffer - references" })
-    vim.keymap.set('n', '<space>f', function()
-      vim.lsp.buf.format { async = true }
-    end, { buffer = ev.buf, desc = "Buffer - format" })
+    end, 'Buffer - 対象フォルダの一覧')
   end,
 })

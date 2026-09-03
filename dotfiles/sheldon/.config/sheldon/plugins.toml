@@ -31,9 +31,9 @@ github = 'zsh-users/zsh-completions'
 rev = '8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8' # 2026-08-21
 apply = ['source']
 
-# compinit 本体は重いので遅延実行する (__compinit は zsh.d/lib.zsh で定義)
+# compinit 本体は重いので遅延実行する (__setup_completion は zsh.d/lib.zsh で定義)
 [plugins.compinit]
-inline = 'zsh-defer __compinit'
+inline = 'zsh-defer __setup_completion'
 
 [plugins.fast-syntax-highlighting]
 github = 'zdharma-continuum/fast-syntax-highlighting'

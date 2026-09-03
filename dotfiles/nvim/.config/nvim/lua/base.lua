@@ -1,24 +1,44 @@
+-- =============================================================================
+-- 最初に決めておきたい設定
+--
+-- 見た目やタブ幅などの一般的な設定は options.lua にある。
+-- ここには「使わない機能を無効にする」など、早い段階で決めたいものを置く。
+-- =============================================================================
+
+-- このファイル自体の文字コード
 vim.scriptencoding = 'utf-8'
 
--- remote python plugin は未使用のため python3 provider を無効化する
+-- Python で書かれたプラグインは使っていないので、その連携を無効にする。
+-- 無効にすると起動時に Python を探しに行かなくなり、少し速くなる
 vim.g.loaded_python3_provider = 0
 
--- netrw は nvim-tree を使うため無効化する
+-- netrw は Neovim に最初から入っているファイル管理機能。
+-- 代わりに nvim-tree を使うので無効にする
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
 
--- number / termguicolors などの表示系オプションは options.lua に集約している
 
--- insertモードからnormalモードに切り替えた時にIMEをオフにする
+-- -----------------------------------------------------------------------------
+-- 日本語入力(IME)の自動オフ (Mac のみ)
+--
+-- 文字を入力するモード(挿入モード)から、操作するモード(ノーマルモード)に
+-- 戻ったとき、IMEが「ひらがな」のままだとコマンドが打てない。
+-- そこでモードを抜けるたびに、macOS に「英数キーを押した」と伝えて英数に戻す。
+-- (key code 102 が「英数」キー)
+-- -----------------------------------------------------------------------------
 if vim.fn.has('mac') == 1 then
+  -- キー入力の待ち時間を短くする (モード切替の反応をよくするため)
   vim.opt.ttimeoutlen = 1
+
   vim.api.nvim_create_augroup('MyIMEGroup', {})
-  vim.api.nvim_create_autocmd('InsertLeave', {
+  vim.api.nvim_create_autocmd('InsertLeave', {   -- 挿入モードを抜けたとき
     group = 'MyIMEGroup',
     pattern = '*',
     callback = function()
-      -- os.execute は同期実行でモード切替が詰まるため非同期で投げる
-      vim.system({ 'osascript', '-e', 'tell application "System Events" to key code 102' })
+      -- vim.system は「実行して結果を待たない」。
+      -- 待つ書き方だとモード切替のたびに一瞬固まってしまう
+      vim.system({ 'osascript', '-e',
+        'tell application "System Events" to key code 102' })
     end
   })
 end

@@ -1,92 +1,89 @@
+-- =============================================================================
+-- 見た目と動作の設定
+--
+-- 下の options テーブルに「設定名 = 値」を並べ、最後にまとめて反映する。
+-- 1つずつ vim.opt.xxx = ... と書くのと同じだが、一覧で見やすいのでこの形。
+-- =============================================================================
+
 local options = {
-  -- エンコーディング
-  encoding = "utf-8",
-  fileencoding = "utf-8",
-  -- バックアップ
-  backup = false,
-  swapfile = false,
-  -- 補完
-  completeopt = { "menuone", "noselect" },
-  conceallevel = 0,
-  -- 検索
-  hlsearch = true,
-  ignorecase = true,
-  smartcase = true,
-  incsearch = true,
-  -- マウス操作
-  --mouse = "a",
-  mouse = "",
-  -- タブ、インデント
-  tabstop = 2,
-  shiftwidth = 2,
-  expandtab = true,
-  smartindent = true,
-  -- オンの時、ウィンドウを横分割すると新しいウインドウはカレントウインドウの下に開かれる
-  splitbelow = false,
-  -- オンの時、ウインドウを縦分割すると新しいウインドウはカレントウインドウの右に開かれる
-  splitright = false,
-  -- ヘルプの言語
-  helplang = 'ja',
-  -- 不可視文字化可視化
-  list = true,
-  listchars = { tab = '>>', trail = '-', nbsp = '+' },
-  -- 行番号
-  number = true,
-  -- 相対行番号
-  relativenumber = true,
-  -- ステータスライン
-  showmode = false,
-  showtabline = 2,
-  -- ハイライト
-  cursorline = true,
-  cursorcolumn = false,
-  background = "dark",
-  -- クリップボード共有
-  clipboard = "unnamedplus",
-  -- コマンドラインの行数
-  cmdheight = 2,
-  -- ウインドウのタイトル
-  title = true,
-  -- 行番号に使われる桁数
-  numberwidth = 4,
-  -- 目印用の桁をどう表示するか
-  signcolumn = "yes",
-  -- 行の折返し
-  wrap = false,
-  -- コマンドラインの補完指定
-  wildoptions = "pum",
-  -- カーソルの上下に確保する表示行
-  scrolloff = 8,
-  -- フォント
-  guifont = "monospace:h17",
-  -- ポップアップメニューの高さ
-  pumheight = 10,
-  -- ターミナルで使うGUIカラー
-  termguicolors = true,
-  -- ウィンドウの透過
-  winblend = 0,
-  -- ポップアップメニューの透過
-  pumblend = 0,
-  -- 入力をタイムアウトするミリ秒
-  timeoutlen = 300,
-  -- undo情報をファイルに保存
-  undofile = true,
-  -- スワップファイル更新までの時間
-  updatetime = 300,
-  -- 上書きする時バックアップを作成するか
-  writebackup = false,
-  -- 外部プログラム使用時のシェル
-  shell = "zsh",
-  -- 指定のパターンに合致するファイルはバックアップしない
-  backupskip = { "/tmp/*", "/private/tmp/*" },
+  -- 文字コード ------------------------------------------------------------
+  encoding = 'utf-8',       -- Neovim内部で使う文字コード
+  fileencoding = 'utf-8',   -- ファイルを保存するときの文字コード
+
+  -- バックアップ ----------------------------------------------------------
+  backup = false,           -- 上書き保存のときにバックアップを残さない
+  writebackup = false,      -- 保存中の一時バックアップも作らない
+  swapfile = false,         -- 編集中の内容を記録するスワップファイルを作らない
+  undofile = true,          -- 元に戻す履歴はファイルに保存する(閉じても残る)
+  backupskip = { '/tmp/*', '/private/tmp/*' },  -- 一時ファイルは対象外
+
+  -- 補完 ------------------------------------------------------------------
+  completeopt = { 'menuone', 'noselect' },  -- 候補が1つでも一覧を出し、勝手に選ばない
+  pumheight = 10,           -- 補完候補の一覧に表示する最大行数
+  pumblend = 0,             -- 補完候補の透過度 (0 = 透過しない)
+  conceallevel = 0,         -- 記号を隠さずそのまま表示する
+
+  -- 検索 ------------------------------------------------------------------
+  hlsearch = true,          -- 検索した語をすべて強調表示する
+  incsearch = true,         -- 入力の途中から検索結果を表示する
+  ignorecase = true,        -- 大文字小文字を区別しない
+  smartcase = true,         -- ただし大文字を含めて検索したときは区別する
+
+  -- インデント ------------------------------------------------------------
+  tabstop = 2,              -- タブ文字を何文字分の幅で表示するか
+  shiftwidth = 2,           -- 自動インデント1段の幅
+  expandtab = true,         -- タブキーを押したらスペースを入れる
+  smartindent = true,       -- 改行したとき前の行に合わせて字下げする
+
+  -- 表示 ------------------------------------------------------------------
+  number = true,            -- 行番号を表示する
+  relativenumber = true,    -- カーソル行からの相対的な行番号も表示する
+  numberwidth = 4,          -- 行番号の表示幅
+  cursorline = true,        -- カーソルのある行を強調する
+  cursorcolumn = false,     -- カーソルのある列は強調しない
+  signcolumn = 'yes',       -- 左端の記号欄を常に表示する(表示のたびに幅が動かない)
+  wrap = false,             -- 長い行を折り返さない
+  scrolloff = 8,            -- カーソルの上下に最低8行は見えるようにする
+  list = true,              -- 空白やタブを記号で見えるようにする
+  listchars = { tab = '>>', trail = '-', nbsp = '+' },  -- その記号の見た目
+  termguicolors = true,     -- 色を24bitで表示する(色数が増えてきれいになる)
+  background = 'dark',      -- 背景が暗い前提の配色にする
+  winblend = 0,             -- ウィンドウの透過度 (0 = 透過しない)
+  title = true,             -- ターミナルのタイトルにファイル名を出す
+
+  -- ステータスライン・タブ --------------------------------------------------
+  showmode = false,         -- 「-- 挿入 --」を出さない(ステータスラインに出るため)
+  showtabline = 2,          -- 上部のタブ行を常に表示する
+  cmdheight = 2,            -- 画面下のコマンド欄の高さ
+  wildoptions = 'pum',      -- コマンドの補完候補をポップアップで出す
+
+  -- ウィンドウ分割 ----------------------------------------------------------
+  splitbelow = false,       -- 横分割したとき新しい窓を下に開かない(上に開く)
+  splitright = false,       -- 縦分割したとき新しい窓を右に開かない(左に開く)
+
+  -- その他 ------------------------------------------------------------------
+  mouse = '',               -- マウス操作を使わない
+  clipboard = 'unnamedplus',-- ヤンク(コピー)をOSのクリップボードと共有する
+  helplang = 'ja',          -- ヘルプを日本語優先で表示する
+  timeoutlen = 300,         -- キーの連続入力を待つ時間(ミリ秒)
+  updatetime = 300,         -- 何も操作しないとき処理を走らせるまでの時間(ミリ秒)
+  shell = 'zsh',            -- :! などで外部コマンドを動かすときのシェル
+  guifont = 'monospace:h17',-- GUI版で使うフォント
 }
 
-vim.opt.shortmess:append("c")
+-- 補完メニューのメッセージ("一致 1/3" など)を出さない
+vim.opt.shortmess:append('c')
 
-for k, v in pairs(options) do
-  vim.opt[k] = v
+-- 上の一覧をまとめて反映する
+for name, value in pairs(options) do
+  vim.opt[name] = value
 end
 
-vim.opt.whichwrap:append("<,>,[,],h,l")
-vim.opt.iskeyword:append("-")
--- formatoptions-=cro は ftplugin に上書きされるため autocmds.lua の FileType 側で行う
+-- 行の端で←→を押したとき、前後の行に移動できるようにする
+vim.opt.whichwrap:append('<,>,[,],h,l')
+
+-- ハイフンを含む単語(foo-bar)を1つの単語として扱う
+vim.opt.iskeyword:append('-')
+
+-- 改行時にコメント記号を自動で続けない設定は、ファイル種別ごとの設定に
+-- 上書きされてしまう。そのため autocmds.lua の FileType 側で行っている

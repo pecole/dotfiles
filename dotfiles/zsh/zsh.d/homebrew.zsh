@@ -1,12 +1,29 @@
-# google-cloud-sdk (Macのみcaskでインストールされる)
-# HOMEBREW_PREFIX は brew shellenv が設定済み
-__gcloud_sdk="${HOMEBREW_PREFIX}/share/google-cloud-sdk"
-if [[ -r "${__gcloud_sdk}/path.zsh.inc" ]]; then
-  source "${__gcloud_sdk}/path.zsh.inc"
-  # completion は重い(約90ms)ので .zshrc 側で __defer により遅延読み込みする
-  export GCLOUD_COMPLETION_INC="${__gcloud_sdk}/completion.zsh.inc"
-fi
-unset __gcloud_sdk
+# =============================================================================
+# Homebrew が見つかったときだけ読み込まれる設定 (.zshrc から呼ばれる)
+# =============================================================================
 
-# alias home brew
-alias powerup='brew update && brew upgrade && brew cleanup' # all upgrade
+# -----------------------------------------------------------------------------
+# Google Cloud SDK (gcloud コマンド)
+#
+# Mac では Homebrew の cask で入るため、Homebrew の中に置かれる。
+# HOMEBREW_PREFIX は直前に実行された `brew shellenv` が設定している。
+# -----------------------------------------------------------------------------
+__gcloud_dir="${HOMEBREW_PREFIX}/share/google-cloud-sdk"
+
+if [[ -r "${__gcloud_dir}/path.zsh.inc" ]]; then
+  # gcloud コマンドを使えるようにする (PATH に追加するだけなので軽い)
+  source "${__gcloud_dir}/path.zsh.inc"
+
+  # コマンド補完は読み込みに約90msかかる。
+  # 場所だけ覚えておいて、.zshrc 側であとから読み込ませる
+  export GCLOUD_COMPLETION_INC="${__gcloud_dir}/completion.zsh.inc"
+fi
+
+unset __gcloud_dir
+
+
+# -----------------------------------------------------------------------------
+# エイリアス
+# -----------------------------------------------------------------------------
+# インストール済みパッケージをまとめて最新にして、古いファイルを掃除する
+alias powerup='brew update && brew upgrade && brew cleanup'

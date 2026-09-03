@@ -1,12 +1,23 @@
 #!/bin/sh
-# link.sh が作成したシンボリックリンクを削除する
+# =============================================================================
+# unlink.sh — link.sh が作ったシンボリックリンクを消す
+#
+# 消すのはこのリポジトリを指しているリンクだけ。
+# 他のものが作ったリンクや、本物のファイルには触らない。
+#
+#   使い方: ./scripts/unlink.sh
+# =============================================================================
 set -eu
 
 dotfiles_root=$(cd "$(dirname "$0")/.." && pwd)
 . "${dotfiles_root}/scripts/common.sh"
 
-__unlink_entry() {
-    __unlink "$2"
+
+# linklist の1行ごとに呼ばれる処理
+# 第1引数 (リンク元) は使わないので、第2引数だけを渡す
+__unlink_one() {
+    __remove_link "$2"
 }
 
-__each_linklist_entry __unlink_entry
+
+__for_each_link __unlink_one

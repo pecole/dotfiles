@@ -1,84 +1,162 @@
 #!/bin/sh
+# =============================================================================
 # scripts/*.sh から読み込まれる共通関数
+#
+# 呼び出し側であらかじめ次の変数を用意しておくこと:
+#   dotfiles_root … このリポジトリの場所 (絶対パス)
+#   backup_dir    … 退避先 (link.sh のみ。__make_link が使う)
+# =============================================================================
 
 
-# ログ出力
-__info() { printf '[info] %s\n' "$*" >&2; }
-__warn() { printf '[warn] %s\n' "$*" >&2; }
+# -----------------------------------------------------------------------------
+# 画面へのメッセージ表示
+#
+# 標準エラー(>&2)に出しているのは、このスクリプトの出力を別のコマンドに
+# 渡したときにメッセージが混ざらないようにするため
+# -----------------------------------------------------------------------------
+__info()  { printf '[info] %s\n'  "$*" >&2; }
+__warn()  { printf '[warn] %s\n'  "$*" >&2; }
 __error() { printf '[error] %s\n' "$*" >&2; }
 
 
-# ディレクトリを再帰的に作成
-__mkdir() {
+# -----------------------------------------------------------------------------
+# ディレクトリを作る (途中のディレクトリもまとめて作る)
+#
+#   使い方: __make_dir ~/.config/nvim
+#
+# すでにあれば何もしない
+# -----------------------------------------------------------------------------
+__make_dir() {
     [ -e "$1" ] || { mkdir -p "$1" && __info "mkdir: $1"; }
 }
 
 
-# シンボリックリンクを作成
-# すでに正しいリンクなら何もしない。別のリンクなら張り替え、
-# 実ファイル・ディレクトリなら ${backup_dir} に退避してから作成する
-__ln() {
-    _target=$1
-    _link=$2
+# -----------------------------------------------------------------------------
+# シンボリックリンク (ショートカットのようなもの) を作る
+#
+#   使い方: __make_link <リンク元=リポジトリ内の実体> <リンク先=作る場所>
+#
+# 作る場所に何があるかで動きが変わる:
+#   1. すでに同じリンクがある      → 何もしない
+#   2. 別の場所を指すリンクがある  → 消して作り直す
+#   3. 本物のファイルやフォルダ    → $backup_dir に退避してから作る
+#   4. 何も無い                    → そのまま作る
+# -----------------------------------------------------------------------------
+__make_link() {
+    _link_source=$1   # リポジトリの中にある実体
+    _link_path=$2     # リンクを作る場所
 
-    if [ -L "$_link" ]; then
-        [ "$(readlink "$_link")" = "$_target" ] && return 0
-        unlink "$_link"
-    elif [ -e "$_link" ]; then
-        __mkdir "${backup_dir:?}"
-        mv "$_link" "${backup_dir}/" && __warn "backup: $_link -> ${backup_dir}/"
+    if [ -L "$_link_path" ]; then
+        # すでにリンクがある場合。同じ場所を指していればやることは無い
+        [ "$(readlink "$_link_path")" = "$_link_source" ] && return 0
+        unlink "$_link_path"
+    elif [ -e "$_link_path" ]; then
+        # 本物のファイルがある場合。上書きすると消えてしまうので退避する
+        __make_dir "${backup_dir:?}"
+        mv "$_link_path" "${backup_dir}/" \
+            && __warn "backup: $_link_path -> ${backup_dir}/"
     fi
 
-    ln -s "$_target" "$_link" && __info "ln: $_target -> $_link"
+    ln -s "$_link_source" "$_link_path" \
+        && __info "ln: $_link_source -> $_link_path"
 }
 
 
-# シンボリックリンクを削除
-# このリポジトリを指すリンク以外は誤爆防止のため削除しない
-__unlink() {
-    _link=$1
+# -----------------------------------------------------------------------------
+# シンボリックリンクを消す
+#
+#   使い方: __remove_link ~/.zshenv
+#
+# 消すのは「このリポジトリを指しているリンク」だけ。
+# 別の場所を指すリンクは、他の何かが作ったものかもしれないので触らない
+# -----------------------------------------------------------------------------
+__remove_link() {
+    _link_path=$1
 
-    [ -L "$_link" ] || return 0
-    case "$(readlink "$_link")" in
-        "${dotfiles_root:?}"/*) unlink "$_link" && __info "unlink: $_link" ;;
-        *) __warn "skip (リポジトリ外を指すリンク): $_link" ;;
+    [ -L "$_link_path" ] || return 0   # リンクでなければ何もしない
+
+    case "$(readlink "$_link_path")" in
+        "${dotfiles_root:?}"/*)
+            unlink "$_link_path" && __info "unlink: $_link_path"
+            ;;
+        *)
+            __warn "skip (リポジトリ外を指すリンク): $_link_path"
+            ;;
     esac
 }
 
 
-# linklistのコメント('#'以降)と空行を削除して出力
-__remove_linklist_comment() {
+# -----------------------------------------------------------------------------
+# linklist から実際の設定行だけを取り出す
+#
+# sed で 2つのことをしている:
+#   1つ目 … '#' から行末までを削除する (コメントを消す)
+#   2つ目 … 空っぽになった行を削除する
+# -----------------------------------------------------------------------------
+__strip_comments() {
     sed -e 's/[[:space:]]*#.*//' -e '/^[[:space:]]*$/d' "$1"
 }
 
 
-# linklist (OS共通 + OS別) の各行を $1 に渡した関数で処理する
-# 関数は「リポジトリ内の絶対パス」「展開済みのリンク先」の2引数で呼ばれる
-__each_linklist_entry() {
+# -----------------------------------------------------------------------------
+# linklist に書かれた全ての行を、渡された関数で処理する
+#
+#   使い方: __for_each_link <関数名>
+#
+# 渡した関数は 1行ごとに次の2つの引数で呼ばれる:
+#   $1 … リンク元 (リポジトリ内の絶対パス)
+#   $2 … リンク先 (${HOME} などを展開した後のパス)
+#
+# 読むファイルは2つ:
+#   linklist.Base.txt     … OS共通
+#   linklist.<OS名>.txt   … OS別 (Darwin / Linux)。無ければ読み飛ばす
+# -----------------------------------------------------------------------------
+__for_each_link() {
     _handler=$1
 
     cd "${dotfiles_root:?}/dotfiles"
+
     for _linklist in "linklist.Base.txt" "linklist.$(uname -s).txt"; do
         [ -r "$_linklist" ] || continue
 
-        __remove_linklist_comment "$_linklist" | while read -r _target _link; do
-            # linklist内の ${HOME} などを展開
-            _link=$(eval echo "$_link")
-            "$_handler" "${PWD}/${_target}" "$_link"
+        __strip_comments "$_linklist" | while read -r _source _link_path; do
+            # linklist には ${HOME}/.zshenv のように変数のまま書いてある。
+            # eval で実際のパス (/Users/name/.zshenv) に変換する
+            _link_path=$(eval echo "$_link_path")
+
+            "$_handler" "${PWD}/${_source}" "$_link_path"
         done
     done
 }
 
 
-# インストール済みのHomebrewをPATHに通す
+# -----------------------------------------------------------------------------
+# Homebrew を使えるようにする
+#
+# 環境ごとに置き場所が違うので、上から順に探す。
+#   /opt/homebrew          … Apple Silicon の Mac
+#   /usr/local             … Intel の Mac
+#   /home/linuxbrew, ~/    … Linux (Linuxbrew)
+#
+# 見つかれば 0 (成功) を、見つからなければ 1 (失敗) を返す
+#
+# ※ 探す場所の並びは dotfiles/zsh/zsh.d/lib.zsh の __setup_homebrew と揃えること
+# -----------------------------------------------------------------------------
 __load_brew() {
+    # すでに使えるなら何もしない
     command -v brew >/dev/null 2>&1 && return 0
-    for _brew in /opt/homebrew/bin/brew /usr/local/bin/brew \
-                 /home/linuxbrew/.linuxbrew/bin/brew "${HOME}/.linuxbrew/bin/brew"; do
+
+    for _brew in /opt/homebrew/bin/brew \
+                 /usr/local/bin/brew \
+                 /home/linuxbrew/.linuxbrew/bin/brew \
+                 "${HOME}/.linuxbrew/bin/brew"; do
         if [ -x "$_brew" ]; then
+            # brew shellenv は PATH などを設定するためのコマンド。
+            # その出力をこのシェルで実行する
             eval "$("$_brew" shellenv)"
             return 0
         fi
     done
+
     return 1
 }

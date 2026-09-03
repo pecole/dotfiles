@@ -1,9 +1,23 @@
--- terminal --
+-- =============================================================================
+-- ターミナル — Neovim を閉じずにシェルや lazygit を開く
+--
+--   <leader>tt … シェルを画面中央に開く / 閉じる
+--   <leader>tg … lazygit (gitの操作画面) を開く / 閉じる
+--
+-- どちらも同じキーで開閉できる (トグル)。
+-- ターミナルの中にいるときも同じキーで閉じられるよう、
+-- ノーマルモード 'n' とターミナルモード 't' の両方に割り当てている。
+-- =============================================================================
 
--- グローバル関数を定義せずに済むよう、生成した Terminal をここに保持する
+-- 開いたターミナルをここに覚えておく。
+-- 2回目以降は同じものを開き直すので、中の状態が残る
 local terminals = {}
 
--- 遅延ロード後に呼ばれるので require はコールバックの中で行う
+
+-- 「開閉する関数」を作って返す
+--
+-- プラグインが読み込まれる前にこのファイルは評価されるので、
+-- require はキーを押した時点(=関数の中)で行う必要がある
 local function toggle(name, opts)
   return function()
     if not terminals[name] then
@@ -13,15 +27,20 @@ local function toggle(name, opts)
   end
 end
 
-local float_terminal = toggle('float', { direction = 'float', hidden = true })
-local lazygit = toggle('lazygit', { cmd = 'lazygit', direction = 'float', hidden = true })
+
+-- direction = 'float' … 画面中央に浮かせて表示する
+-- hidden = true       … 起動時には開かず、キーを押すまで隠しておく
+local open_shell = toggle('float', { direction = 'float', hidden = true })
+local open_lazygit = toggle('lazygit', { cmd = 'lazygit', direction = 'float', hidden = true })
+
 
 return {
   'akinsho/toggleterm.nvim',
-  version = "*",
+  version = '*',   -- 最新のリリース版を使う
   opts = {},
+
   keys = {
-    { '<leader>tt', float_terminal, mode = { 'n', 't' }, desc = 'ToggleTerm - フロートターミナル' },
-    { '<leader>tg', lazygit,        mode = { 'n', 't' }, desc = 'ToggleTerm - lazygit' },
+    { '<leader>tt', open_shell,   mode = { 'n', 't' }, desc = 'ToggleTerm - シェルを開閉' },
+    { '<leader>tg', open_lazygit, mode = { 'n', 't' }, desc = 'ToggleTerm - lazygitを開閉' },
   },
 }
