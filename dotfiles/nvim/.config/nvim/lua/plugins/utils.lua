@@ -28,14 +28,8 @@ return {
       require('nvim-ts-autotag').setup()
     end
   },
-  -- コメントアウト --
-  {
-    'numToStr/Comment.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      require('Comment').setup()
-    end
-  },
+  -- コメントアウトは Neovim 0.10 以降の組み込み gc / gcc を使うため
+  -- Comment.nvim は削除した
   -- vim help 日本語訳 --
   {
     'vim-jp/vimdoc-ja',

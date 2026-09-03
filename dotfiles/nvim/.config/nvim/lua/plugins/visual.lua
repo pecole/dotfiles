@@ -70,19 +70,20 @@ return {
     event = { 'BufReadPre', 'BufNewFile' },
     opts = {},
   },
-  -- カラーピッカー --
+  -- カラーコードのハイライト --
+  -- 更新が止まっていた ccc.nvim から、活発にメンテされている
+  -- catgoose/nvim-colorizer.lua に置き換えた
   {
-    'uga-rosa/ccc.nvim',
-    cmd = { 'CccPick' },
+    'catgoose/nvim-colorizer.lua',
     ft = { 'lua', 'css', 'scss', 'html' },
-    config = function()
-      require('ccc').setup({
-        highlighter = {
-          auto_enable = true,
-          lsp = true,
-        },
-      })
-    end
+    opts = {
+      filetypes = { 'lua', 'css', 'scss', 'html' },
+      user_default_options = {
+        css = true,
+        css_fn = true,
+        lsp = true,
+      },
+    },
   },
   -- バッファライン --
   -- gitsigns は b:gitsigns_status_dict 経由の疎結合なので dependencies にしない

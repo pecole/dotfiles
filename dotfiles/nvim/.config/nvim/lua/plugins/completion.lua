@@ -1,62 +1,49 @@
+-- 補完 --
+-- nvim-cmp から blink.cmp に移行した。
+-- cmp-nvim-lsp / cmp-buffer / cmp-path / cmp-calc / cmp-nvim-lua /
+-- cmp-nvim-lsp-signature-help / cmp_luasnip は blink の組み込み機能で賄えるため削除。
+
 return {
   {
-    "hrsh7th/nvim-cmp",
-    dependencies = {
-      { "L3MON4D3/LuaSnip" },
-      { "saadparwaiz1/cmp_luasnip" },
-      { "hrsh7th/cmp-nvim-lsp" },
-      { "hrsh7th/cmp-buffer" },
-      -- sources に並べている以上、対応するソースプラグインも入れておく
-      { "hrsh7th/cmp-path" },
-      { "hrsh7th/cmp-calc" },
-      { "hrsh7th/cmp-nvim-lua" },
-      { "hrsh7th/cmp-nvim-lsp-signature-help" },
-    },
-    event = { 'VeryLazy', 'BufReadPre', 'BufNewFile' },
-    config = function()
-      -- lspの設定後に追加
-      vim.opt.completeopt = "menu,menuone,noselect"
+    'saghen/blink.cmp',
+    dependencies = { 'L3MON4D3/LuaSnip' },
+    -- リリースタグを使うと fuzzy matcher のビルド済みバイナリ
+    -- (sha256 検証付き) が取得される
+    version = '1.*',
+    event = { 'InsertEnter', 'CmdlineEnter' },
+    ---@module 'blink.cmp'
+    ---@type blink.cmp.Config
+    opts = {
+      snippets = { preset = 'luasnip' },
 
-      local has_words_before = function()
-        if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then return false end
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
-      end
+      -- nvim-cmp 時代のキーバインドを踏襲する
+      keymap = {
+        preset = 'none',
+        ['<C-p>'] = { 'select_prev', 'fallback' },
+        ['<C-n>'] = { 'select_next', 'fallback' },
+        ['<C-d>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-f>'] = { 'scroll_documentation_down', 'fallback' },
+        ['<C-space>'] = { 'show', 'show_documentation', 'hide_documentation' },
+        ['<C-e>'] = { 'hide', 'fallback' },
+        ['<Tab>'] = { 'accept', 'fallback' },
+      },
 
-      local cmp = require "cmp"
-      cmp.setup({
-        snippet = {
-          expand = function(args)
-            require("luasnip").lsp_expand(args.body)
-          end,
+      sources = {
+        default = { 'lsp', 'path', 'snippets', 'buffer' },
+        providers = {
+          -- nvim-cmp の keyword_length = 2 相当
+          snippets = { min_keyword_length = 2 },
+          buffer = { min_keyword_length = 2 },
         },
-        mapping = cmp.mapping.preset.insert({
-          ["<C-p>"] = cmp.mapping.select_prev_item(),
-          ["<C-n>"] = cmp.mapping.select_next_item(),
-          ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-          ["<C-f>"] = cmp.mapping.scroll_docs(4),
-          ["<C-Space>"] = cmp.mapping.complete(),
-          ["<C-e>"] = cmp.mapping.close(),
-          --["<CR>"] = cmp.mapping.confirm({ select = true }),
-          ["<Tab>"] = vim.schedule_wrap(function(fallback)
-            if cmp.visible() and has_words_before() then
-              cmp.confirm({ select = true })
-            else
-              fallback()
-            end
-          end),
-        }),
-        sources = cmp.config.sources({
-          { name = 'nvim_lsp',               keyword_length = 1 },
-          -- スニペットは LuaSnip なので vsnip ではなく luasnip
-          { name = 'luasnip',                keyword_length = 2 },
-          { name = 'nvim_lsp_signature_help' },
-          { name = 'nvim_lua',               keyword_length = 2 },
-          { name = 'calc' },
-          { name = 'buffer',                 keyword_length = 2 },
-          { name = 'path' },
-        }),
-      })
-    end
-  }
+      },
+
+      -- cmp-nvim-lsp-signature-help の代替 (blink 組み込み)
+      signature = { enabled = true },
+
+      completion = {
+        documentation = { auto_show = true },
+      },
+    },
+    opts_extend = { 'sources.default' },
+  },
 }
