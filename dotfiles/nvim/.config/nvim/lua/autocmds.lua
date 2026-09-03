@@ -1,46 +1,61 @@
---local augroup = vim.api.nvim_create_augroup -- Create/get autocommand group
-local autocmd = vim.api.nvim_create_autocmd -- Create autocommand
+local autocmd = vim.api.nvim_create_autocmd
+local group = vim.api.nvim_create_augroup('MyAutocmds', { clear = true })
 
--- Remove whitespace on save
+-- 保存時に行末の空白を削除する
+-- markdown の行末2スペースなど意味を持つものは対象外にする
+local trim_ignore = { markdown = true, diff = true, gitcommit = true, gitrebase = true }
 autocmd('BufWritePre', {
-  pattern = '*',
-  command = ":%s/\\s\\+$//e",
-})
-
--- Don't auto commenting new lines
-autocmd('BufEnter', {
-  pattern = '*',
-  command = 'set fo-=c fo-=r fo-=o',
-})
-
--- Restore cursor location when file is opened
-autocmd({ 'BufReadPost' }, {
-  pattern = { '*' },
-  callback = function()
-    vim.api.nvim_exec('silent! normal! g`"zv', false)
+  group = group,
+  callback = function(args)
+    if trim_ignore[vim.bo[args.buf].filetype] then
+      return
+    end
+    -- keeppatterns で検索履歴を汚さず、winsaveview でカーソル位置を保つ
+    local view = vim.fn.winsaveview()
+    vim.cmd([[keeppatterns %s/\s\+$//e]])
+    vim.fn.winrestview(view)
   end,
 })
 
--- Automatically format go files on save
-autocmd("BufWritePre", {
-  pattern = "*.go",
+-- 改行時にコメントを自動継続しない
+-- ftplugin が formatoptions を上書きするため FileType の後に打ち消す
+autocmd('FileType', {
+  group = group,
   callback = function()
-    local params = vim.lsp.util.make_range_params()
-    params.context = {only = {"source.organizeImports"}}
-    -- buf_request_sync defaults to a 1000ms timeout. Depending on your
-    -- machine and codebase, you may want longer. Add an additional
-    -- argument after params if you find that you have to write the file
-    -- twice for changes to be saved.
-    -- E.g., vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, 3000)
-    local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params)
-    for cid, res in pairs(result or {}) do
-      for _, r in pairs(res.result or {}) do
+    vim.opt_local.formatoptions:remove({ 'c', 'r', 'o' })
+  end,
+})
+
+-- ファイルを開いたときに前回のカーソル位置を復元する
+autocmd('BufReadPost', {
+  group = group,
+  callback = function(args)
+    local mark = vim.api.nvim_buf_get_mark(args.buf, '"')
+    if mark[1] > 0 and mark[1] <= vim.api.nvim_buf_line_count(args.buf) then
+      pcall(vim.api.nvim_win_set_cursor, 0, mark)
+      vim.cmd('normal! zv')
+    end
+  end,
+})
+
+-- Goファイルは保存時に import を整理してからフォーマットする
+autocmd('BufWritePre', {
+  group = group,
+  pattern = '*.go',
+  callback = function(args)
+    for _, client in ipairs(vim.lsp.get_clients({ bufnr = args.buf, method = 'textDocument/codeAction' })) do
+      -- make_range_params は nvim 0.11 以降 position_encoding が必須
+      local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
+      params.context = { only = { 'source.organizeImports' }, diagnostics = {} }
+
+      -- 既定の1000msだとリポジトリによっては足りず、2回保存が必要になることがある
+      local res = client:request_sync('textDocument/codeAction', params, 3000, args.buf)
+      for _, r in pairs(res and res.result or {}) do
         if r.edit then
-          local enc = (vim.lsp.get_client_by_id(cid) or {}).offset_encoding or "utf-16"
-          vim.lsp.util.apply_workspace_edit(r.edit, enc)
+          vim.lsp.util.apply_workspace_edit(r.edit, client.offset_encoding)
         end
       end
     end
-    vim.lsp.buf.format({async = false})
-  end
+    vim.lsp.buf.format({ async = false })
+  end,
 })

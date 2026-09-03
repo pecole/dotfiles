@@ -1,5 +1,5 @@
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
   vim.fn.system({
     "git",
     "clone",
@@ -15,9 +15,10 @@ local opts = {
   defaults = {
     lazy = true,
   },
-  -- luarocks を必要とするプラグインが無いため hererocks を無効化する
+  -- luarocks を必要とするプラグインが無いため luarocks 連携ごと無効化する
+  -- (hererocks = false だけだと :checkhealth lazy が警告を出し続ける)
   rocks = {
-    hererocks = false,
+    enabled = false,
   },
   performance = {
     cache = {

@@ -1,10 +1,7 @@
+-- git管理下ならリポジトリルートを対象に live_grep する
 local function live_grep()
-  local root = string.gsub(vim.fn.system("git rev-parse --show-toplevel"), "\n", "")
-  if vim.v.shell_error == 0 then
-    require('telescope.builtin').live_grep({ cwd = root })
-  else
-    require('telescope.builtin').live_grep()
-  end
+  local root = vim.fs.root(0, '.git')
+  require('telescope.builtin').live_grep(root and { cwd = root } or {})
 end
 
 return {
@@ -15,7 +12,7 @@ return {
       'nvim-tree/nvim-web-devicons',
     },
     keys = {
-      { '<leader>e', mode = 'n' },
+      { '<leader>e', function() require('nvim-tree.api').tree.toggle() end, desc = 'NvimTree - toggle' },
     },
     config = function()
       require('nvim-tree').setup({
@@ -41,7 +38,7 @@ return {
                 untracked = '?',
                 deleted = '✘',
                 staged = '✓',
-                unmerged = '',
+                unmerged = '',
                 ignored = '◌',
               },
             },
@@ -62,9 +59,6 @@ return {
 
         on_attach = 'default'
       })
-
-      local api = require('nvim-tree.api')
-      vim.keymap.set('n', '<leader>e', api.tree.toggle, { desc = 'NvimTree - toggle' })
     end
   },
   -- telescope
@@ -74,27 +68,29 @@ return {
       { 'nvim-lua/plenary.nvim' },
       { 'nvim-telescope/telescope-frecency.nvim' },
     },
-    event = "VeryLazy",
+    cmd = 'Telescope',
+    keys = {
+      { '<leader>ff', function() require('telescope.builtin').find_files() end, desc = 'Telescope - Find files' },
+      { '<leader>fg', live_grep,                                               desc = 'Telescope - Live grep' },
+      { '<leader>fb', function() require('telescope.builtin').buffers() end,   desc = 'Telescope - Buffers' },
+      { '<leader>fh', function() require('telescope.builtin').help_tags() end, desc = 'Telescope - Help tags' },
+      {
+        '<leader>fp',
+        function() require('telescope').extensions.frecency.frecency() end,
+        desc = 'Telescope - Frecency'
+      },
+    },
     config = function()
-      local builtin = require('telescope.builtin')
-      vim.keymap.set('n', '<leader>ff', builtin.find_files, { desc = 'Telescope - Find files' })
-      vim.keymap.set('n', '<leader>fg', live_grep, { desc = 'Telescope - Live grep' })
-      vim.keymap.set('n', '<leader>fb', builtin.buffers, { desc = 'Telescope - Buffers' })
-      vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope - Help tags' })
-      vim.keymap.set('n', '<leader>fp', require("telescope").extensions.frecency.frecency,
-        { desc = 'Telescope - Frecency' })
-
       local telescope = require('telescope')
       local telescopeConfig = require("telescope.config")
 
-      -- Clone the default Telescope configuration
+      -- 既定の vimgrep_arguments を複製して隠しファイルも検索対象にする
       local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-
-      -- I want to search in hidden/dot files.
       table.insert(vimgrep_arguments, "--hidden")
-      -- I don't want to search in the `.git` directory.
+      -- .git ディレクトリの中までは検索しない
       table.insert(vimgrep_arguments, "--glob")
       table.insert(vimgrep_arguments, "!**/.git/*")
+
       telescope.setup({
         defaults = {
           -- `hidden = true` is not supported in text grep commands.
@@ -113,7 +109,6 @@ return {
   -- flash
   {
     "folke/flash.nvim",
-    event = "VeryLazy",
     ---@type Flash.Config
     opts = {},
     -- stylua: ignore
@@ -128,24 +123,19 @@ return {
   -- 関数を一覧表示してジャンプできる
   {
     'stevearc/aerial.nvim',
-    opts = {},
     dependencies = {
       "nvim-tree/nvim-web-devicons",
     },
     event = { 'BufReadPre', 'BufNewFile' },
-    config = function()
-      require("aerial").setup({
-        -- optionally use on_attach to set keymaps when aerial has attached to a buffer
-        on_attach = function(bufnr)
-          local map = vim.keymap.set
-          local opts = { buffer = bufnr }
-          -- Jump forwards/backwards with '{' and '}'
-          map("n", "{", "<cmd>AerialPrev<CR>", opts)
-          map("n", "}", "<cmd>AerialNext<CR>", opts)
-        end,
-      })
-      -- You probably also want to set a keymap to toggle aerial
-      vim.keymap.set("n", "<leader>a", "<cmd>AerialToggle!<CR>")
-    end
+    keys = {
+      { '<leader>a', '<cmd>AerialToggle!<CR>', desc = 'Aerial - toggle' },
+    },
+    opts = {
+      -- aerial がバッファにアタッチしたときだけ有効なキーマップ
+      on_attach = function(bufnr)
+        vim.keymap.set('n', '{', '<cmd>AerialPrev<CR>', { buffer = bufnr, desc = 'Aerial - prev' })
+        vim.keymap.set('n', '}', '<cmd>AerialNext<CR>', { buffer = bufnr, desc = 'Aerial - next' })
+      end,
+    },
   },
 }

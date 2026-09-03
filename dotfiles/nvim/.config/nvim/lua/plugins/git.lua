@@ -1,4 +1,4 @@
--- gitsigns
+-- gitsigns / diffview
 
 return {
   {
@@ -51,15 +51,17 @@ return {
   },
   {
     "sindrets/diffview.nvim",
+    dependencies = { 'nvim-lua/plenary.nvim' },
+    cmd = { 'DiffviewOpen', 'DiffviewClose', 'DiffviewFileHistory' },
+    -- <leader>hd は gitsigns がバッファローカルで diffthis に使っているため避ける
+    keys = {
+      { '<leader>hh', '<cmd>DiffviewOpen HEAD~1<CR>',   desc = 'Diffview - 1つ前とのdiff' },
+      { '<leader>hf', '<cmd>DiffviewFileHistory %<CR>', desc = 'Diffview - ファイルの変更履歴' },
+      { '<leader>hc', '<cmd>DiffviewClose<CR>',         desc = 'Diffview - diffの画面閉じる' },
+      { '<leader>hm', '<cmd>DiffviewOpen<CR>',          desc = 'Diffview - コンフリクト解消画面表示' },
+    },
     config = function()
       require("diffview").setup()
     end,
-    lazy = false,
-    keys = {
-      { mode = "n", "<leader>hh", "<cmd>DiffviewOpen HEAD~1<CR>", desc = "1つ前とのdiff" },
-      { mode = "n", "<leader>hf", "<cmd>DiffviewFileHistory %<CR>", desc = "ファイルの変更履歴" },
-      { mode = "n", "<leader>hc", "<cmd>DiffviewClose<CR>", desc = "diffの画面閉じる" },
-      { mode = "n", "<leader>hd", "<cmd>Diffview<CR>", desc = "コンフリクト解消画面表示" },
-    },
   },
 }

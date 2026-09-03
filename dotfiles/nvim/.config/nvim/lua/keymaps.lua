@@ -73,8 +73,11 @@ keymap("n", "<Leader>ck", "<cmd>CpError<cr>", opts)
 -- Global mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 vim.keymap.set('n', '<space>o', vim.diagnostic.open_float, { desc = "Diagnostic - open float" })
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = "Diagnostic - goto preve" })
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = "Diagnostic - goto next" })
+-- goto_prev / goto_next は nvim 0.11 で非推奨。jump() に置き換え
+vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
+  { desc = "Diagnostic - goto prev" })
+vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
+  { desc = "Diagnostic - goto next" })
 vim.keymap.set('n', '<space>ll', vim.diagnostic.setloclist, { desc = "Diagnostic - setcloclist" })
 
 -- Use LspAttach autocommand to only map the following keys

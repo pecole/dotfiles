@@ -2,7 +2,9 @@ return {
   -- コードハイライト --
   {
     'romus204/tree-sitter-manager.nvim',
-    lazy = false,
+    -- ハイライト/自動インストールは FileType で走るので BufReadPre で間に合う
+    event = { 'BufReadPre', 'BufNewFile' },
+    cmd = { 'TSManager', 'TSInstall', 'TSUpdate', 'TSUninstall' },
     config = function()
       require('tree-sitter-manager').setup({
         ensure_installed = { "lua", "bash", "awk", "json", "diff" },

@@ -1,15 +1,10 @@
+-- キーマップは keymaps.lua の LspAttach 側で定義している
 return {
   'mason-org/mason-lspconfig.nvim',
   dependencies = {
-    { 'mason-org/mason.nvim',           config = true },
+    { 'mason-org/mason.nvim',   config = true },
     { 'neovim/nvim-lspconfig' },
   },
   event = { 'BufReadPre', 'BufNewFile' },
   config = true,
-  key = {
-    { "<C-space>", "<cmd>lua vim.lsp.completion.get()  <CR>", mode = "i" },
-    { "gh",        "<cmd>lua vim.lsp.buf.hover()       <CR>" },
-    { "gd",        "<cmd>lua vim.lsp.buf.definition()  <CR>" },
-    { "gD",        "<cmd>lua vim.lsp.buf.declaration() <CR>" },
-  }
 }

@@ -1,22 +1,24 @@
 return {
   {
-    "L3MON4D3/LuaSnip",
+    "hrsh7th/nvim-cmp",
     dependencies = {
-      { "hrsh7th/nvim-cmp" },
+      { "L3MON4D3/LuaSnip" },
+      { "saadparwaiz1/cmp_luasnip" },
       { "hrsh7th/cmp-nvim-lsp" },
       { "hrsh7th/cmp-buffer" },
-      { "saadparwaiz1/cmp_luasnip" },
+      -- sources に並べている以上、対応するソースプラグインも入れておく
+      { "hrsh7th/cmp-path" },
+      { "hrsh7th/cmp-calc" },
+      { "hrsh7th/cmp-nvim-lua" },
+      { "hrsh7th/cmp-nvim-lsp-signature-help" },
     },
     event = { 'VeryLazy', 'BufReadPre', 'BufNewFile' },
     config = function()
-      -- lspのハンドラーに設定
-      -- capabilities = require("cmp_nvim_lsp").default_capabilities()
-
       -- lspの設定後に追加
       vim.opt.completeopt = "menu,menuone,noselect"
 
       local has_words_before = function()
-        if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
+        if vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "prompt" then return false end
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
         return col ~= 0 and vim.api.nvim_buf_get_text(0, line - 1, 0, line - 1, col, {})[1]:match("^%s*$") == nil
       end
@@ -46,7 +48,8 @@ return {
         }),
         sources = cmp.config.sources({
           { name = 'nvim_lsp',               keyword_length = 1 },
-          { name = 'vsnip',                  keyword_length = 2 },
+          -- スニペットは LuaSnip なので vsnip ではなく luasnip
+          { name = 'luasnip',                keyword_length = 2 },
           { name = 'nvim_lsp_signature_help' },
           { name = 'nvim_lua',               keyword_length = 2 },
           { name = 'calc' },
