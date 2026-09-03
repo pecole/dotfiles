@@ -16,10 +16,16 @@ return {
     },
     config = function()
       require('nvim-tree').setup({
-        sort_by = 'extension',
+        -- sort_by / update_cwd / highlight_git=true は旧式の書き方で、
+        -- 現在は legacy 互換層で読み替えられているだけなので現行の形に直す
+        sort = {
+          sorter = 'extension',
+        },
         update_focused_file = {
           enable = true,
-          update_cwd = true,
+          update_root = {
+            enable = true,
+          },
         },
         view = {
           width = '25%',
@@ -28,7 +34,7 @@ return {
         },
 
         renderer = {
-          highlight_git = true,
+          highlight_git = 'name',
           highlight_opened_files = 'name',
           icons = {
             glyphs = {
@@ -85,11 +91,9 @@ return {
       local telescopeConfig = require("telescope.config")
 
       -- 既定の vimgrep_arguments を複製して隠しファイルも検索対象にする
-      local vimgrep_arguments = { unpack(telescopeConfig.values.vimgrep_arguments) }
-      table.insert(vimgrep_arguments, "--hidden")
-      -- .git ディレクトリの中までは検索しない
-      table.insert(vimgrep_arguments, "--glob")
-      table.insert(vimgrep_arguments, "!**/.git/*")
+      -- (.git ディレクトリの中までは検索しない)
+      local vimgrep_arguments = vim.deepcopy(telescopeConfig.values.vimgrep_arguments)
+      vim.list_extend(vimgrep_arguments, { "--hidden", "--glob", "!**/.git/*" })
 
       telescope.setup({
         defaults = {

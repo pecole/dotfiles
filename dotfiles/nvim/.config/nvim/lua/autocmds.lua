@@ -45,8 +45,13 @@ autocmd('BufWritePre', {
   callback = function(args)
     for _, client in ipairs(vim.lsp.get_clients({ bufnr = args.buf, method = 'textDocument/codeAction' })) do
       -- make_range_params は nvim 0.11 以降 position_encoding が必須
-      local params = vim.lsp.util.make_range_params(0, client.offset_encoding)
-      params.context = { only = { 'source.organizeImports' }, diagnostics = {} }
+      local range = vim.lsp.util.make_range_params(0, client.offset_encoding)
+      ---@type lsp.CodeActionParams
+      local params = {
+        textDocument = range.textDocument,
+        range = range.range,
+        context = { only = { 'source.organizeImports' }, diagnostics = {} },
+      }
 
       -- 既定の1000msだとリポジトリによっては足りず、2回保存が必要になることがある
       local res = client:request_sync('textDocument/codeAction', params, 3000, args.buf)
