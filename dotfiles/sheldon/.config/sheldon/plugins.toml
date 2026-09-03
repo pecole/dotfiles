@@ -3,9 +3,13 @@
 #
 # 上から順に評価されて `sheldon source` の出力になるため、記述順に意味がある。
 #
-# - `sheldon add` to add a new plugin to the config file
-# - `sheldon edit` to open up the config file in the default editor
-# - `sheldon remove` to remove a plugin from the config file
+# プラグインは rev でコミットを固定している。これらは対話シェルの起動ごとに
+# source されるため、更新は意図的に行う。更新手順:
+#
+#   1. 対象リポジトリの新しいコミットを確認する
+#      gh api repos/<owner>/<repo>/commits/HEAD --jq .sha
+#   2. 下の rev を書き換える
+#   3. sheldon lock && rm -f ~/.cache/zsh/sheldon.zsh* で反映
 #
 # See the documentation for more https://github.com/rossmacarthur/sheldon#readme
 
@@ -17,12 +21,14 @@ defer = "{{ hooks?.pre | nl }}{% for file in files %}zsh-defer source \"{{ file 
 # zsh-defer は他のプラグインより先に読み込む必要がある
 [plugins.zsh-defer]
 github = 'romkatv/zsh-defer'
+rev = '53a26e287fbbe2dcebb3aa1801546c6de32416fa' # 2024-02-10
 apply = ['source']
 
 # 補完定義の追加は fpath への追加だけなので即時 source する。
 # compinit より後に読み込むと fpath の追加が反映されないため、必ずこの位置に置くこと
 [plugins.zsh-completions]
 github = 'zsh-users/zsh-completions'
+rev = '8cd3bd78e8b1f17271cfdd8269074e5557d8d7b8' # 2026-08-21
 apply = ['source']
 
 # compinit 本体は重いので遅延実行する (__compinit は zsh.d/lib.zsh で定義)
@@ -31,13 +37,16 @@ inline = 'zsh-defer __compinit'
 
 [plugins.fast-syntax-highlighting]
 github = 'zdharma-continuum/fast-syntax-highlighting'
+rev = '4672ad5dd9ad68a7effc1476d65afb7c584ce2b3' # 2026-08-31
 apply = ['defer']
 
 [plugins.zsh-autosuggestions]
 github = 'zsh-users/zsh-autosuggestions'
+rev = '85919cd1ffa7d2d5412f6d3fe437ebdbeeec4fc5' # 2025-06-25
 apply = ['defer']
 
 # fzf は Homebrew で入れて .zshrc 側で `fzf --zsh` を読み込む
 [plugins."zeno.zsh"]
 github = 'yuki-yano/zeno.zsh'
+rev = '490121876701f472e7596b606048a7e1b73b5b03' # 2026-08-31
 apply = ['defer']
