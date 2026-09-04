@@ -47,6 +47,10 @@ style = 'fg:#7aa2f7 bg:#1a1b26'
 format = '[  $symbol$branch(:$remote_branch)]($style)' # nf-pl-left_soft_divider
 
 [git_status]
+# 表示のたびに git で作業ツリー全体の状態を調べるため、
+# gitリポジトリ内でのプロンプト描画が 8.7ms → 14.3ms に増える。
+# 速度優先で無効にする (ブランチ名は git_branch 側で表示される)
+disabled = true
 style = 'fg:#e0af68 bg:#1a1b26'
 conflicted = '='
 ahead = '⇡${count}'
