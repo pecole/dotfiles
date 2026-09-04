@@ -28,6 +28,24 @@ return {
       require('catppuccin').setup({
         -- ターミナル側の背景を透かして見せる
         transparent_background = true,
+
+        -- catppuccin は既定で「どのプラグインが入っているか」を毎回調べて
+        -- 対応する配色を有効にする。この検出に約5.6msかかるので、
+        -- 検出をやめて結果を直接書いておく。
+        -- (プラグインを増やしたときはここに1行足す)
+        auto_integrations = false,
+        integrations = {
+          aerial = { enabled = true },
+          barbar = { enabled = true },
+          blink_cmp = { enabled = true },
+          diffview = { enabled = true },
+          flash = { enabled = true },
+          gitsigns = { enabled = true },
+          indent_blankline = { enabled = true },
+          mason = { enabled = true },
+          nvimtree = { enabled = true },
+          telescope = { enabled = true },
+        },
       })
 
       vim.cmd.colorscheme('catppuccin-mocha')   -- mocha = 一番暗い配色

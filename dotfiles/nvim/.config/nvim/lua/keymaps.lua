@@ -88,13 +88,15 @@ vim.keymap.set('n', '<Leader>ck', '<cmd>CpError<cr>', opts)         -- エラー
 -- -----------------------------------------------------------------------------
 -- エラー・警告の表示 (LSP を使っていなくても常に有効)
 -- -----------------------------------------------------------------------------
-vim.keymap.set('n', '<space>o', vim.diagnostic.open_float,
+-- vim.diagnostic を直接書くと、起動時にその機能一式が読み込まれて約1.2msかかる。
+-- 関数で包むと、実際にキーを押すまで読み込みが起きない
+vim.keymap.set('n', '<space>o', function() vim.diagnostic.open_float() end,
   { desc = 'Diagnostic - 内容をその場に表示' })
 vim.keymap.set('n', '[d', function() vim.diagnostic.jump({ count = -1, float = true }) end,
   { desc = 'Diagnostic - 前のエラーへ' })
 vim.keymap.set('n', ']d', function() vim.diagnostic.jump({ count = 1, float = true }) end,
   { desc = 'Diagnostic - 次のエラーへ' })
-vim.keymap.set('n', '<space>ll', vim.diagnostic.setloclist,
+vim.keymap.set('n', '<space>ll', function() vim.diagnostic.setloclist() end,
   { desc = 'Diagnostic - 一覧を出す' })
 
 

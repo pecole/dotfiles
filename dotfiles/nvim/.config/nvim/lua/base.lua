@@ -12,10 +12,15 @@ vim.scriptencoding = 'utf-8'
 -- 無効にすると起動時に Python を探しに行かなくなり、少し速くなる
 vim.g.loaded_python3_provider = 0
 
--- netrw は Neovim に最初から入っているファイル管理機能。
--- 代わりに nvim-tree を使うので無効にする
-vim.g.loaded_netrw = 1
+-- Neovim に最初から入っている機能のうち、使わないものを無効にする。
+-- 読み込みを飛ばせるぶん起動が少し速くなる
+vim.g.loaded_netrw = 1          -- ファイル管理 (nvim-tree を使う)
 vim.g.loaded_netrwPlugin = 1
+vim.g.loaded_gzip = 1           -- .gz を開いたとき自動で展開する
+vim.g.loaded_tarPlugin = 1      -- .tar を開いたとき中身を一覧する
+vim.g.loaded_zipPlugin = 1      -- .zip を開いたとき中身を一覧する
+vim.g.loaded_tutor_mode_plugin = 1  -- :Tutor (操作の練習用)
+vim.g.loaded_remote_plugins = 1     -- 外部言語で書かれたプラグイン連携
 
 
 -- -----------------------------------------------------------------------------

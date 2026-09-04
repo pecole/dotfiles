@@ -42,6 +42,18 @@ if __has_command sheldon; then
     sheldon source
 fi
 
+# --- mise (言語バージョン管理) -------------------------------------------
+# node や go のバージョンをディレクトリごとに切り替えるツール。
+#
+# 本体を有効にする処理は約19msかかるので、あとに回して起動を速くする。
+# その代わり shims (バージョンを判断して本物に橋渡しする中継役) を
+# 先に PATH へ入れておく。これは PATH に1行足すだけなので一瞬で終わり、
+# 本体の準備が終わるまでの間も node や go が正しく動く。
+[[ -d "$HOME/.local/share/mise/shims" ]] \
+  && path=("$HOME/.local/share/mise/shims" $path)
+
+__run_later __setup_mise
+
 # --- あとで実行するもの ---------------------------------------------------
 # ここから下の __run_later は登録した順に実行される。
 # 補完の準備 (__setup_completion) は sheldon の設定内で登録済みなので、
@@ -61,21 +73,9 @@ __has_command fzf && __run_later __load_cached fzf "$commands[fzf]" fzf --zsh
 __run_later __setup_zeno_keys
 
 # --- Rust (cargo) --------------------------------------------------------
-# rustup が作るファイル。~/.cargo/bin を PATH に足すだけの内容
-if [[ -r "$HOME/.cargo/env" ]]; then
-  source "$HOME/.cargo/env"
-fi
-
-# --- mise (言語バージョン管理) -------------------------------------------
-# node や go のバージョンをディレクトリごとに切り替えるツール。
-#
-# `mise activate zsh` の出力には「解決済みの PATH」がそのまま埋め込まれる。
-# つまり実行した時点の環境に依存するので、他と違ってキャッシュできない。
-__mise_path=${commands[mise]:-$HOME/.local/bin/mise}
-if [[ -x $__mise_path ]]; then
-  eval "$($__mise_path activate zsh)"
-fi
-unset __mise_path
+# rustup が入れたコマンドを使えるようにする。
+# (~/.cargo/env を読むのと同じことを、ファイルを開かずに行っている)
+[[ -d "$HOME/.cargo/bin" ]] && path=("$HOME/.cargo/bin" $path)
 
 # --- starship (プロンプト表示) -------------------------------------------
 if __has_command starship; then
